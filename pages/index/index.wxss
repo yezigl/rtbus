@@ -1,0 +1,79 @@
+/**index.wxss**/
+
+.weui-cells {
+    margin-top: 20rpx;
+}
+
+.qb {
+    margin-top: 40rpx;
+    padding: 0 30rpx;
+}
+
+.muted {
+    color: #6c757d;
+}
+
+.status {
+    width: 100%;
+    height: 440rpx;
+    white-space: nowrap;
+}
+
+.sv {
+    width: 100%;
+    height: 100%;
+}
+
+.station {
+    display: inline-block;
+    width: 100rpx;
+    height: 160rpx;
+    border-bottom: 4rpx solid #495057;
+    vertical-align: top;
+    position: relative;
+}
+
+.station-item {
+    width: 100%;
+    height: 100%;
+}
+
+.station-icon {
+    width: 40rpx;
+    height: 40rpx;
+    position: absolute;
+    left: 30rpx;
+    bottom: -22rpx;
+}
+
+.station-name {
+    position: relative;
+    writing-mode: vertical-rl;
+    left: 24rpx;
+    top: 190rpx;
+}
+
+.bus {
+    width: 50rpx;
+    height: 54rpx;
+    position: absolute;
+    left: 26rpx;
+    bottom: 30rpx;
+}
+
+.ld {
+    margin-top:20rpx;
+    padding-left:20rpx;
+}
+
+.line {
+    font-size: 40rpx;
+}
+
+.direction {
+    margin-left: 30rpx;
+}
+
+.description {
+    padding:10rpx 20rpx;
+}
