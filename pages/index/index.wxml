@@ -1,39 +1,40 @@
 <!--index.wxml-->
 <view class='container'>
     <view class='weui-cells'>
-        <view class="weui-cell weui-cell_input">
-            <view class="weui-cell__hd">
-                <view class="weui-label">城市</view>
+        <view class='weui-cell weui-cell_input'>
+            <view class='weui-cell__hd'>
+                <view class='weui-label'>城市</view>
             </view>
-            <view class="weui-cell__bd">
+            <view class='weui-cell__bd'>
                 <picker range='{{cities}}' range-key='name' value='{{cities[cityIndex].code}}' bindchange='changeCity'>
                     <view class='weui-input'>{{cities[cityIndex].name}}</view>
                 </picker>
             </view>
         </view>
-        <view class="weui-cell weui-cell_input">
-            <view class="weui-cell__hd">
-                <view class="weui-label">线路</view>
+        <view class='weui-cell weui-cell_input'>
+            <view class='weui-cell__hd'>
+                <view class='weui-label'>线路</view>
             </view>
-            <view class="weui-cell__bd">
-                <input class="weui-input" bindblur="getDirection" bindconfirm="getDirection" placeholder="请输入线路" placeholder-class='muted' />
+            <view class='weui-cell__bd'>
+                <input type='text' class='weui-input' bindblur='getDirection' bindconfirm='getDirection' placeholder='请输入线路' placeholder-class='muted' />
             </view>
+            <icon type='info' size='18' class='tip' color='#ccc' bindtap='showTip'></icon>
         </view>
-        <view class="weui-cell weui-cell_input">
-            <view class="weui-cell__hd">
-                <view class="weui-label">方向</view>
+        <view class='weui-cell weui-cell_input'>
+            <view class='weui-cell__hd'>
+                <view class='weui-label'>方向</view>
             </view>
-            <view class="weui-cell__bd">
+            <view class='weui-cell__bd'>
                 <picker range='{{directions}}' range-key='name' value='{{directions[directionIndex].value}}' bindchange='changeDirection'>
                     <view class='weui-input {{directionClass}}'>{{directions[directionIndex].name}}</view>
                 </picker>
             </view>
         </view>
-        <view class="weui-cell weui-cell_input">
-            <view class="weui-cell__hd">
-                <view class="weui-label">站点</view>
+        <view class='weui-cell weui-cell_input'>
+            <view class='weui-cell__hd'>
+                <view class='weui-label'>站点</view>
             </view>
-            <view class="weui-cell__bd">
+            <view class='weui-cell__bd'>
                 <picker range='{{stations}}' range-key='name' value='{{stations[stationIndex].value}}' bindchange='changeStation'>
                     <view class='weui-input {{stationClass}}'>{{stations[stationIndex].name}}</view>
                 </picker>
@@ -41,7 +42,7 @@
         </view>
     </view>
     <view class='qb'>
-        <button class="weui-btn" type="primary" bindtap='getStatus'>查询</button>
+        <button class='weui-btn' type='primary' bindtap='getStatus'>查询</button>
     </view>
     <view class='bus-status'>
         <view class='ld'>
@@ -53,14 +54,15 @@
         </view>
         <view class='status'>
             <scroll-view scroll-x scroll-y class='sv' scroll-left='{{scrollLeft}}'>
-                <view wx:for="{{busStatus.list}}" class='station'>
-                    <view wx:if="{{item.virtual}}" class='station-item'>
+                <view wx:for='{{busStatus.list}}' class='station'>
+                    <view wx:if='{{item.virtual}}' class='station-item'>
                         <image src='/images/vehicle_ico1.png' wx:if='{{item.hasBus}}' class='bus'></image>
                     </view>
                     <view wx:else class='station-item'>
                         <image src='/images/s_ico.png' class='station-icon'></image>
                         <image src='/images/vehicle_ico2.png' wx:if='{{item.hasBus}}' class='bus'></image>
-                        <text class='station-name'>{{item.name}}</text>
+                        <text wx:if='{{item.value == stationIndex}}' class='station-name station-selected'>{{item.name}}</text>
+                        <text wx:else class='station-name'>{{item.name}}</text>
                     </view>
                 </view>
             </scroll-view>

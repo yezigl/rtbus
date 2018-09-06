@@ -4,6 +4,12 @@
     margin-top: 20rpx;
 }
 
+.weui-input {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .qb {
     margin-top: 40rpx;
     padding: 0 30rpx;
@@ -76,4 +82,13 @@
 
 .description {
     padding:10rpx 20rpx;
+}
+
+.station-selected {
+    color: #007bff;
+}
+
+.tip {
+    float: right;
+    margin-right: 20rpx;
 }

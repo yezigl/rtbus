@@ -6,9 +6,9 @@ Page({
     data: {
         cities: [''],
         cityIndex: 0,
-        directions: [{name: '请选择行车方向', value: ''}],
+        directions: [{ name: '请选择行车方向', value: '' }],
         directionIndex: 0,
-        stations: [{name: '请选择上车站', value:''}],
+        stations: [{ name: '请选择上车站', value: '' }],
         stationIndex: 0,
 
         line: '',
@@ -21,35 +21,44 @@ Page({
         pixelRatio: 2,
     },
     //事件处理函数
-    changeCity: function(e) {
+    changeCity: function (e) {
         console.log(e);
         this.setData({
             cityIndex: e.detail.value
         });
     },
-    changeDirection: function(e) {
+    changeDirection: function (e) {
         this.setData({
             directionIndex: e.detail.value,
             directionClass: e.detail.value == 0 ? 'muted' : '',
+            stationIndex: 0,
+            busStatus: {},
         });
         if (e.detail.value != 0) {
             this.getStation();
         }
     },
-    changeStation: function(e) {
+    changeStation: function (e) {
         this.setData({
             stationIndex: e.detail.value,
             stationClass: e.detail.value == 0 ? 'muted' : '',
         })
     },
-    reset: function() {
+    reset: function () {
         this.setData({
             directionIndex: 0,
             directionClass: 'muted',
             stationIndex: 0,
             stationClass: 'muted',
+            stations: [{ name: '请选择上车站', value: '' }],
             busStatus: {},
             scrollLeft: 0,
+        });
+    },
+    showTip: function () {
+        wx.showModal({
+            content: '1、请输入完整的线路名称，如“专101”、“46路区间”。\n2、本服务提供的信息仅供参考，如有不符，敬请谅解。\n3、数据来源于各地公交公司和交通委。',
+            showCancel: false,
         });
     },
 
@@ -57,7 +66,7 @@ Page({
         this.getOpenCity();
         var that = this;
         wx.getSystemInfo({
-            success: function(res) {
+            success: function (res) {
                 that.setData({
                     pixelRatio: res.pixelRatio
                 });
@@ -66,23 +75,24 @@ Page({
     },
 
 
-    getCityCode: function() {
+    getCityCode: function () {
         return this.data.cities[this.data.cityIndex].code;
     },
-    getOpenCity: function() {
+    getOpenCity: function () {
         var that = this;
         wx.request({
             url: 'https://1e10.online/api/rtbus/city',
             method: 'GET',
-            success: function(ret) {
+            success: function (ret) {
                 that.setData({
                     cities: ret.data.data
                 });
             }
         })
     },
-    getDirection: function(e) {
-        if (this.isRequest == 1) {
+    getDirection: function (e) {
+        var line = e.detail.value;
+        if (this.isRequest == 1 || !line) {
             return;
         }
         this.isRequest = 1;
@@ -91,7 +101,6 @@ Page({
             mask: true,
         });
         var that = this;
-        var line = e.detail.value;
         wx.request({
             url: 'https://1e10.online/api/rtbus/direction',
             method: 'GET',
@@ -110,7 +119,7 @@ Page({
             }
         });
     },
-    getStation: function() {
+    getStation: function () {
         wx.showLoading({
             title: '数据加载中',
             mask: true,
@@ -132,7 +141,7 @@ Page({
             }
         })
     },
-    getStatus: function() {
+    getStatus: function () {
         if (this.data.stationIndex == 0) {
             return;
         }
@@ -141,7 +150,7 @@ Page({
             mask: true,
         });
         var that = this;
-        var scrollLeft = ((this.data.stationIndex - 3) * 2 * 100) / this.data.pixelRatio;
+        var scrollLeft = ((this.data.stationIndex - 3) * 2 * 100 - 100) / this.data.pixelRatio;
         wx.request({
             url: 'https://1e10.online/api/rtbus/status',
             method: 'GET',
