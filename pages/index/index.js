@@ -4,6 +4,8 @@ const app = getApp()
 
 Page({
     data: {
+        apiUrl: 'https://1e10.cn',
+
         cities: [''],
         cityIndex: 0,
         directions: [{ name: '请选择行车方向', value: '' }],
@@ -81,7 +83,7 @@ Page({
     getOpenCity: function () {
         var that = this;
         wx.request({
-            url: 'https://1e10.online/api/rtbus/city',
+            url: that.data.apiUrl + '/api/rtbus/city',
             method: 'GET',
             success: function (ret) {
                 that.setData({
@@ -102,7 +104,7 @@ Page({
         });
         var that = this;
         wx.request({
-            url: 'https://1e10.online/api/rtbus/direction',
+            url: that.data.apiUrl + '/api/rtbus/direction',
             method: 'GET',
             data: {
                 'cityCode': this.getCityCode(),
@@ -126,7 +128,7 @@ Page({
         });
         var that = this;
         wx.request({
-            url: 'https://1e10.online/api/rtbus/station',
+            url: that.data.apiUrl + '/api/rtbus/station',
             method: 'GET',
             data: {
                 'cityCode': this.getCityCode(),
@@ -152,7 +154,7 @@ Page({
         var that = this;
         var scrollLeft = ((this.data.stationIndex - 3) * 2 * 100 - 100) / this.data.pixelRatio;
         wx.request({
-            url: 'https://1e10.online/api/rtbus/status',
+            url: that.data.apiUrl + '/api/rtbus/status',
             method: 'GET',
             data: {
                 'cityCode': this.getCityCode(),
