@@ -24,7 +24,6 @@ Page({
     },
     //事件处理函数
     changeCity: function (e) {
-        console.log(e);
         this.setData({
             cityIndex: e.detail.value
         });

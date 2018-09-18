@@ -25,7 +25,7 @@
                 <view class='weui-label'>方向</view>
             </view>
             <view class='weui-cell__bd'>
-                <picker range='{{directions}}' range-key='name' value='{{directions[directionIndex].value}}' bindchange='changeDirection'>
+                <picker range='{{directions}}' range-key='name' value='{{directions[directionIndex].value}}' bindchange='changeDirection' disabled='{{line == ""}}'>
                     <view class='weui-input {{directionClass}}'>{{directions[directionIndex].name}}</view>
                 </picker>
             </view>
@@ -61,7 +61,7 @@
                     <view wx:else class='station-item'>
                         <image src='/images/s_ico.png' class='station-icon'></image>
                         <image src='/images/vehicle_ico2.png' wx:if='{{item.hasBus}}' class='bus'></image>
-                        <text wx:if='{{item.value == stationIndex}}' class='station-name station-selected'>{{item.name}}</text>
+                        <text wx:if='{{(index / 2 + 1) == stationIndex}}' class='station-name station-selected'>{{item.name}}</text>
                         <text wx:else class='station-name'>{{item.name}}</text>
                     </view>
                 </view>
