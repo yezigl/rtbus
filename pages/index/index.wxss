@@ -92,3 +92,9 @@
     float: right;
     margin-right: 20rpx;
 }
+
+.nearby {
+    font-size: 26rpx;
+    margin-right: 36rpx;
+    color: #17a8e2;
+}

@@ -16,8 +16,9 @@
                 <view class='weui-label'>线路</view>
             </view>
             <view class='weui-cell__bd'>
-                <input type='text' class='weui-input' bindblur='getDirection' bindconfirm='getDirection' placeholder='请输入线路' placeholder-class='muted' />
+                <input type='text' class='weui-input' value='{{line}}' bindblur='getDirection' bindconfirm='getDirection' bindfocus='directionFocus' placeholder='请输入线路' placeholder-class='muted' />
             </view>
+            <picker wx:if='{{nearbyStations.length > 0}}' range='{{nearbyStations}}' class='nearby' bindchange='changeNearby'>附近</picker>
             <icon type='info' size='18' class='tip' color='#ccc' bindtap='showTip'></icon>
         </view>
         <view class='weui-cell weui-cell_input'>
@@ -25,7 +26,7 @@
                 <view class='weui-label'>方向</view>
             </view>
             <view class='weui-cell__bd'>
-                <picker range='{{directions}}' range-key='name' value='{{directions[directionIndex].value}}' bindchange='changeDirection' disabled='{{line == ""}}'>
+                <picker range='{{directions}}' range-key='name' value='{{directions[directionIndex].value}}' bindchange='changeDirection' disabled='{{directionDisable}}'>
                     <view class='weui-input {{directionClass}}'>{{directions[directionIndex].name}}</view>
                 </picker>
             </view>

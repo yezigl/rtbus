@@ -1,6 +1,7 @@
 //index.js
 //获取应用实例
 const app = getApp()
+var amap = require('../../libs/amap-wx.js');
 
 Page({
     data: {
@@ -17,16 +18,22 @@ Page({
 
         directionClass: 'muted',
         stationClass: 'muted',
+        directionDisable: true,
 
         busStatus: {},
         scrollLeft: 0,
         pixelRatio: 2,
+
+        nearbyStations: [],
+        nearbyStation: ''
     },
     //事件处理函数
     changeCity: function (e) {
         this.setData({
-            cityIndex: e.detail.value
+            cityIndex: e.detail.value,
+            line: ''
         });
+        this.reset();
     },
     changeDirection: function (e) {
         this.setData({
@@ -45,6 +52,17 @@ Page({
             stationClass: e.detail.value == 0 ? 'muted' : '',
         })
     },
+    changeNearby: function(e) {
+        this.setData({
+            line: this.data.nearbyStations[e.detail.value]
+        });
+        this.getDirection({
+            detail: {
+                value: this.data.nearbyStations[e.detail.value]
+            }
+        });
+    },
+
     reset: function () {
         this.setData({
             directionIndex: 0,
@@ -62,6 +80,14 @@ Page({
             showCancel: false,
         });
     },
+    showMessage: function(data) {
+        wx.hideLoading();
+        wx.showToast({
+            'title': data.message,
+            'icon': 'none',
+            'duration': 2000
+        });
+    },
 
     onLoad: function () {
         this.getOpenCity();
@@ -73,6 +99,7 @@ Page({
                 });
             },
         })
+        this.getNearby();
     },
 
 
@@ -90,6 +117,46 @@ Page({
                 });
             }
         })
+    },
+    getNearby: function() {
+        var that = this;
+        var wxamap = new amap.AMapWX({ key: 'd681595fb1acd11bd900ad2bac9b026d' });
+        wxamap.getPoiAround({
+            querykeywords: '公交',
+            querytypes: '150700',
+            success: function (data) {
+                var poiData = data.poisData[0];
+                if (poiData) {
+                    var address = poiData.address;
+                    var ss = address.split(';');
+                    var sts = [];
+                    for (var i = 0; i < ss.length; i++) {
+                        var line = ss[i].replace('路', '');
+                        if (that.data.cityIndex == 0) {
+                            if(/^(\w+|专|夜|快|运)?\d+(快|(快?(内|外))|通勤快车)?/.test(line)) {
+                                sts.push(line);
+                            }
+                        }
+                    }
+                    that.setData({
+                        nearbyStations: sts,
+                        nearbyStation: poiData.name.replace('(公交站)', '')
+                    });
+                }
+            },
+            fail: function(info) {
+                wx.showToast({
+                    'title': JSON.stringify(info),
+                    'icon': 'none',
+                    'duration': 2000
+                });
+            }
+        })
+    },
+    directionFocus: function(e) {
+        this.setData({
+            directionDisable: true
+        });
     },
     getDirection: function (e) {
         var line = e.detail.value;
@@ -110,13 +177,22 @@ Page({
                 'line': line,
             },
             success: function (ret) {
+                if (ret.data.code != 0) {
+                    that.showMessage(ret.data);
+                    that.isRequest = 0;
+                    return;
+                }
                 that.setData({
                     line: line,
                     directions: ret.data.data,
+                    directionDisable: false
                 });
                 that.reset();
                 wx.hideLoading();
                 that.isRequest = 0;
+            },
+            fail: function () {
+                that.showMessage({ message: '查询失败，请稍后重试' });
             }
         });
     },
@@ -135,10 +211,27 @@ Page({
                 'direction': this.data.directions[this.data.directionIndex].value,
             },
             success: function (ret) {
+                if (ret.data.code != 0) {
+                    that.showMessage(ret.data);
+                    return;
+                }
                 that.setData({
                     stations: ret.data.data
                 });
+                // 判断当前的公交车站
+                for (var i = 0; i < ret.data.data.length; i++) {
+                    var st = ret.data.data[i];
+                    if (that.data.nearbyStation.indexOf(st.name) >= 0) {
+                        that.setData({
+                            stationIndex: i,
+                            stationClass: ''
+                        });
+                    }
+                }
                 wx.hideLoading();
+            },
+            fail: function () {
+                that.showMessage({ message: '查询失败，请稍后重试' });
             }
         })
     },
@@ -162,11 +255,18 @@ Page({
                 'station': this.data.stations[this.data.stationIndex].value,
             },
             success: function (ret) {
+                if (ret.data.code != 0) {
+                    that.showMessage(ret.data);
+                    return;
+                }
                 that.setData({
                     busStatus: ret.data.data,
                     scrollLeft: scrollLeft < 0 ? 0 : scrollLeft,
                 });
                 wx.hideLoading();
+            },
+            fail: function() {
+                that.showMessage({ message: '查询失败，请稍后重试' });
             }
         })
     }
