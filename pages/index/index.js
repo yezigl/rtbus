@@ -9,9 +9,15 @@ Page({
 
         cities: [''],
         cityIndex: 0,
-        directions: [{ name: '请选择行车方向', value: '' }],
+        directions: [{
+            name: '请选择行车方向',
+            value: ''
+        }],
         directionIndex: 0,
-        stations: [{ name: '请选择上车站', value: '' }],
+        stations: [{
+            name: '请选择上车站',
+            value: ''
+        }],
         stationIndex: 0,
 
         line: '',
@@ -27,15 +33,33 @@ Page({
         nearbyStations: [],
         nearbyStation: ''
     },
+
+    onLoad: function() {
+        this.getOpenCity();
+        var that = this;
+        wx.getSystemInfo({
+            success: function(res) {
+                that.setData({
+                    pixelRatio: res.pixelRatio
+                });
+            },
+        })
+        this.getNearby();
+        this.setData({
+            cityIndex: wx.getStorageSync('cityIndex') || 0
+        });
+    },
+
     //事件处理函数
-    changeCity: function (e) {
+    changeCity: function(e) {
         this.setData({
             cityIndex: e.detail.value,
             line: ''
         });
         this.reset();
+        wx.setStorageSync('cityIndex', e.detail.value);
     },
-    changeDirection: function (e) {
+    changeDirection: function(e) {
         this.setData({
             directionIndex: e.detail.value,
             directionClass: e.detail.value == 0 ? 'muted' : '',
@@ -46,7 +70,7 @@ Page({
             this.getStation();
         }
     },
-    changeStation: function (e) {
+    changeStation: function(e) {
         this.setData({
             stationIndex: e.detail.value,
             stationClass: e.detail.value == 0 ? 'muted' : '',
@@ -63,18 +87,21 @@ Page({
         });
     },
 
-    reset: function () {
+    reset: function() {
         this.setData({
             directionIndex: 0,
             directionClass: 'muted',
             stationIndex: 0,
             stationClass: 'muted',
-            stations: [{ name: '请选择上车站', value: '' }],
+            stations: [{
+                name: '请选择上车站',
+                value: ''
+            }],
             busStatus: {},
             scrollLeft: 0,
         });
     },
-    showTip: function () {
+    showTip: function() {
         wx.showModal({
             content: '1、请输入完整的线路名称，如“专101”、“46路区间”。\n2、本服务提供的信息仅供参考，如有不符，敬请谅解。\n3、数据来源于各地公交公司和交通委。',
             showCancel: false,
@@ -89,29 +116,15 @@ Page({
         });
     },
 
-    onLoad: function () {
-        this.getOpenCity();
-        var that = this;
-        wx.getSystemInfo({
-            success: function (res) {
-                that.setData({
-                    pixelRatio: res.pixelRatio
-                });
-            },
-        })
-        this.getNearby();
-    },
-
-
-    getCityCode: function () {
+    getCityCode: function() {
         return this.data.cities[this.data.cityIndex].code;
     },
-    getOpenCity: function () {
+    getOpenCity: function() {
         var that = this;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/city',
             method: 'GET',
-            success: function (ret) {
+            success: function(ret) {
                 that.setData({
                     cities: ret.data.data
                 });
@@ -120,37 +133,45 @@ Page({
     },
     getNearby: function() {
         var that = this;
-        var wxamap = new amap.AMapWX({ key: 'd681595fb1acd11bd900ad2bac9b026d' });
+        var wxamap = new amap.AMapWX({
+            key: 'd681595fb1acd11bd900ad2bac9b026d'
+        });
         wxamap.getPoiAround({
             querykeywords: '公交',
             querytypes: '150700',
-            success: function (data) {
-                var poiData = data.poisData[0];
-                if (poiData) {
+            success: function(data) {
+                var stmap = {};
+                var nst = '';
+                for (var j = 0; j < data.poisData.length && j < 3; j++) {
+                    var poiData = data.poisData[j];
                     var address = poiData.address;
                     var ss = address.split(';');
-                    var sts = [];
                     for (var i = 0; i < ss.length; i++) {
                         var line = ss[i].replace('路', '');
                         if (that.data.cityIndex == 0) {
-                            if(/^(\w+|专|夜|快|运)?\d+(快|(快?(内|外))|通勤快车)?/.test(line)) {
-                                sts.push(line);
+                            if (/^(\w+|专|夜|快|运)?\d+(快|(快?(内|外))|通勤快车)?/.test(line) && line.indexOf('区间') < 0) {
+                                stmap[line] = j;
                             }
+                        } else if (line.indexOf('停运') < 0) {
+                            stmap[line] = j;
                         }
                     }
+                    if (j == 0) {
+                        nst = poiData.name.replace('(公交站)', '');
+                    }
+                }
+                var sts = [];
+                for (var key in stmap) {
+                    sts.push(key);
+                }
+                if (sts.length > 0) {
                     that.setData({
                         nearbyStations: sts,
-                        nearbyStation: poiData.name.replace('(公交站)', '')
+                        nearbyStation: nst
                     });
                 }
             },
-            fail: function(info) {
-                wx.showToast({
-                    'title': JSON.stringify(info),
-                    'icon': 'none',
-                    'duration': 2000
-                });
-            }
+            fail: function(info) {}
         })
     },
     directionFocus: function(e) {
@@ -158,7 +179,7 @@ Page({
             directionDisable: true
         });
     },
-    getDirection: function (e) {
+    getDirection: function(e) {
         var line = e.detail.value;
         if (this.isRequest == 1 || !line) {
             return;
@@ -176,7 +197,7 @@ Page({
                 'cityCode': this.getCityCode(),
                 'line': line,
             },
-            success: function (ret) {
+            success: function(ret) {
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     that.isRequest = 0;
@@ -191,12 +212,14 @@ Page({
                 wx.hideLoading();
                 that.isRequest = 0;
             },
-            fail: function () {
-                that.showMessage({ message: '查询失败，请稍后重试' });
+            fail: function() {
+                that.showMessage({
+                    message: '查询失败，请稍后重试'
+                });
             }
         });
     },
-    getStation: function () {
+    getStation: function() {
         wx.showLoading({
             title: '数据加载中',
             mask: true,
@@ -210,7 +233,7 @@ Page({
                 'line': this.data.line,
                 'direction': this.data.directions[this.data.directionIndex].value,
             },
-            success: function (ret) {
+            success: function(ret) {
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     return;
@@ -230,12 +253,14 @@ Page({
                 }
                 wx.hideLoading();
             },
-            fail: function () {
-                that.showMessage({ message: '查询失败，请稍后重试' });
+            fail: function() {
+                that.showMessage({
+                    message: '查询失败，请稍后重试'
+                });
             }
         })
     },
-    getStatus: function () {
+    getStatus: function() {
         if (this.data.stationIndex == 0) {
             return;
         }
@@ -254,7 +279,7 @@ Page({
                 'direction': this.data.directions[this.data.directionIndex].value,
                 'station': this.data.stations[this.data.stationIndex].value,
             },
-            success: function (ret) {
+            success: function(ret) {
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     return;
@@ -266,7 +291,9 @@ Page({
                 wx.hideLoading();
             },
             fail: function() {
-                that.showMessage({ message: '查询失败，请稍后重试' });
+                that.showMessage({
+                    message: '查询失败，请稍后重试'
+                });
             }
         })
     }
