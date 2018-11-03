@@ -11,7 +11,7 @@
 }
 
 .qb {
-    margin-top: 40rpx;
+    margin-top: 30rpx;
     padding: 0 30rpx;
 }
 
@@ -21,7 +21,7 @@
 
 .status {
     width: 100%;
-    height: 440rpx;
+    height: 420rpx;
     white-space: nowrap;
 }
 
@@ -33,7 +33,7 @@
 .station {
     display: inline-block;
     width: 100rpx;
-    height: 160rpx;
+    height: 140rpx;
     border-bottom: 4rpx solid #495057;
     vertical-align: top;
     position: relative;
@@ -56,7 +56,7 @@
     position: relative;
     writing-mode: vertical-rl;
     left: 24rpx;
-    top: 190rpx;
+    top: 170rpx;
 }
 
 .bus {

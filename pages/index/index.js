@@ -142,17 +142,20 @@ Page({
             success: function(data) {
                 var stmap = {};
                 var nst = '';
-                for (var j = 0; j < data.poisData.length && j < 3; j++) {
+                for (var j = 0; j < data.poisData.length && j < 2; j++) {
                     var poiData = data.poisData[j];
                     var address = poiData.address;
                     var ss = address.split(';');
                     for (var i = 0; i < ss.length; i++) {
-                        var line = ss[i].replace('路', '');
+                        var line = ss[i].replace(/路|高峰/g, '');
+                        if (line.indexOf('/') > 0) {
+                            line = line.split('/')[0];
+                        }
                         if (that.data.cityIndex == 0) {
                             if (/^(\w+|专|夜|快|运)?\d+(快|(快?(内|外))|通勤快车)?/.test(line) && line.indexOf('区间') < 0) {
                                 stmap[line] = j;
                             }
-                        } else if (line.indexOf('停运') < 0) {
+                        } else if (line.indexOf('停运') < 0 && line.indexOf('区间') < 0) {
                             stmap[line] = j;
                         }
                     }
@@ -171,7 +174,9 @@ Page({
                     });
                 }
             },
-            fail: function(info) {}
+            fail: function(info) {
+                console.log(info);
+            }
         })
     },
     directionFocus: function(e) {
