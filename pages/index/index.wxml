@@ -53,7 +53,7 @@
         <view class='description'>
             <text>{{busStatus.description}}</text>
         </view>
-        <view class='status'>
+        <view class='{{statusClass}}'>
             <scroll-view scroll-x scroll-y class='sv' scroll-left='{{scrollLeft}}'>
                 <view wx:for='{{busStatus.list}}' class='station'>
                     <view wx:if='{{item.virtual}}' class='station-item'>
@@ -69,5 +69,7 @@
             </scroll-view>
         </view>
     </view>
-  
+    <view class="ad">
+        <ad unit-id="adunit-6f8f16ceb38e2c79"></ad>
+    </view>
 </view>

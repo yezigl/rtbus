@@ -9,11 +9,14 @@ Page({
 
         cities: [''],
         cityIndex: 0,
+        cityTips: '',
+
         directions: [{
             name: '请选择行车方向',
             value: ''
         }],
         directionIndex: 0,
+
         stations: [{
             name: '请选择上车站',
             value: ''
@@ -31,11 +34,12 @@ Page({
         pixelRatio: 2,
 
         nearbyStations: [],
-        nearbyStation: ''
+        nearbyStation: '',
+
+        statusClass: 'status-ad'
     },
 
     onLoad: function() {
-        this.getOpenCity();
         var that = this;
         wx.getSystemInfo({
             success: function(res) {
@@ -48,23 +52,31 @@ Page({
         this.setData({
             cityIndex: wx.getStorageSync('cityIndex') || 0
         });
+        this.getOpenCity();
     },
 
     //事件处理函数
     changeCity: function(e) {
+        var value = e.detail.value;
+        var that = this;
         this.setData({
-            cityIndex: e.detail.value,
-            line: ''
+            cityIndex: value,
+            line: '',
+            cityTips: that.data.cities[value].tips,
         });
         this.reset();
-        wx.setStorageSync('cityIndex', e.detail.value);
+        wx.setStorageSync('cityIndex', value);
     },
     changeDirection: function(e) {
         this.setData({
             directionIndex: e.detail.value,
             directionClass: e.detail.value == 0 ? 'muted' : '',
-            stationIndex: 0,
-            busStatus: {},
+        });
+        this.resetStatus();
+        this.changeStation({
+            detail: {
+                value: 0
+            }
         });
         if (e.detail.value != 0) {
             this.getStation();
@@ -97,13 +109,19 @@ Page({
                 name: '请选择上车站',
                 value: ''
             }],
+        });
+        this.resetStatus();
+    },
+    resetStatus: function() {
+        this.setData({
             busStatus: {},
             scrollLeft: 0,
+            statusClass: 'status-ad',
         });
     },
     showTip: function() {
         wx.showModal({
-            content: '1、请输入完整的线路名称，如“专101”、“46路区间”。\n2、本服务提供的信息仅供参考，如有不符，敬请谅解。\n3、数据来源于各地公交公司和交通委。',
+            content: this.data.cityTips,
             showCancel: false,
         });
     },
@@ -126,7 +144,8 @@ Page({
             method: 'GET',
             success: function(ret) {
                 that.setData({
-                    cities: ret.data.data
+                    cities: ret.data.data,
+                    cityTips: ret.data.data[that.data.cityIndex].tips,
                 });
             }
         })
@@ -292,6 +311,7 @@ Page({
                 that.setData({
                     busStatus: ret.data.data,
                     scrollLeft: scrollLeft < 0 ? 0 : scrollLeft,
+                    statusClass: 'status',
                 });
                 wx.hideLoading();
             },

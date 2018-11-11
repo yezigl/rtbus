@@ -11,7 +11,7 @@
 }
 
 .qb {
-    margin-top: 30rpx;
+    margin-top: 20rpx;
     padding: 0 30rpx;
 }
 
@@ -21,7 +21,14 @@
 
 .status {
     width: 100%;
-    height: 420rpx;
+    height: 400rpx;
+    white-space: nowrap;
+    margin-bottom: 20rpx;
+}
+
+.status-ad {
+    width: 100%;
+    height: 300rpx;
     white-space: nowrap;
 }
 
@@ -33,7 +40,7 @@
 .station {
     display: inline-block;
     width: 100rpx;
-    height: 140rpx;
+    height: 130rpx;
     border-bottom: 4rpx solid #495057;
     vertical-align: top;
     position: relative;
@@ -56,7 +63,7 @@
     position: relative;
     writing-mode: vertical-rl;
     left: 24rpx;
-    top: 170rpx;
+    top: 160rpx;
 }
 
 .bus {
@@ -67,8 +74,11 @@
     bottom: 30rpx;
 }
 
-.ld {
+.bus-status {
     margin-top:20rpx;
+}
+
+.ld {
     padding-left:20rpx;
 }
 
@@ -97,4 +107,9 @@
     font-size: 26rpx;
     margin-right: 36rpx;
     color: #17a8e2;
+}
+
+.ad {
+    padding-left: 30rpx;
+    padding-right: 30rpx;
 }
