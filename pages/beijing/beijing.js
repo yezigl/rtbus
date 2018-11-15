@@ -1,4 +1,4 @@
-//index.js
+// pages/beijing.js
 //获取应用实例
 const app = getApp()
 var amap = require('../../libs/amap-wx.js');
@@ -46,10 +46,10 @@ Page({
         favorFlag: false,
     },
 
-    onLoad: function() {
+    onLoad: function () {
         var that = this;
         wx.getSystemInfo({
-            success: function(res) {
+            success: function (res) {
                 that.setData({
                     pixelRatio: res.pixelRatio
                 });
@@ -64,7 +64,7 @@ Page({
     },
 
     //事件处理函数
-    changeCity: function(e) {
+    changeCity: function (e) {
         var value = e.detail.value;
         var that = this;
         this.setData({
@@ -75,7 +75,7 @@ Page({
         this.reset();
         wx.setStorageSync('cityIndex', value);
     },
-    changeDirection: function(e) {
+    changeDirection: function (e) {
         this.setData({
             directionIndex: e.detail.value,
             directionClass: e.detail.value == 0 ? 'muted' : '',
@@ -90,13 +90,13 @@ Page({
             this.getStation();
         }
     },
-    changeStation: function(e) {
+    changeStation: function (e) {
         this.setData({
             stationIndex: e.detail.value,
             stationClass: e.detail.value == 0 ? 'muted' : '',
         })
     },
-    changeNearby: function(e) {
+    changeNearby: function (e) {
         this.setData({
             line: this.data.nearbyStations[e.detail.value]
         });
@@ -107,7 +107,7 @@ Page({
         });
     },
 
-    reset: function() {
+    reset: function () {
         this.setData({
             directionIndex: 0,
             directionClass: 'muted',
@@ -120,20 +120,20 @@ Page({
         });
         this.resetStatus();
     },
-    resetStatus: function() {
+    resetStatus: function () {
         this.setData({
             busStatus: {},
             scrollLeft: 0,
             statusClass: 'status-ad',
         });
     },
-    showTip: function() {
+    showTip: function () {
         wx.showModal({
             content: this.data.cityTips,
             showCancel: false,
         });
     },
-    showMessage: function(data) {
+    showMessage: function (data) {
         wx.hideLoading();
         wx.showToast({
             'title': data.message,
@@ -142,15 +142,15 @@ Page({
         });
     },
 
-    getCityCode: function() {
+    getCityCode: function () {
         return this.data.cities[this.data.cityIndex].code;
     },
-    getOpenCity: function() {
+    getOpenCity: function () {
         var that = this;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/city',
             method: 'GET',
-            success: function(ret) {
+            success: function (ret) {
                 that.setData({
                     cities: ret.data.data,
                     cityTips: ret.data.data[that.data.cityIndex].tips,
@@ -158,7 +158,7 @@ Page({
             }
         })
     },
-    getNearby: function() {
+    getNearby: function () {
         var that = this;
         var wxamap = new amap.AMapWX({
             key: 'd681595fb1acd11bd900ad2bac9b026d'
@@ -166,7 +166,7 @@ Page({
         wxamap.getPoiAround({
             querykeywords: '公交',
             querytypes: '150700',
-            success: function(data) {
+            success: function (data) {
                 var stmap = {};
                 var nst = '';
                 for (var j = 0; j < data.poisData.length && j < 2; j++) {
@@ -201,17 +201,17 @@ Page({
                     });
                 }
             },
-            fail: function(info) {
+            fail: function (info) {
                 console.log(info);
             }
         })
     },
-    directionFocus: function(e) {
+    directionFocus: function (e) {
         this.setData({
             directionDisable: true
         });
     },
-    getDirection: function(e, cb) {
+    getDirection: function (e, cb) {
         var line = e.detail.value;
         if (this.isRequest == 1 || !line) {
             return;
@@ -229,7 +229,7 @@ Page({
                 'cityCode': this.getCityCode(),
                 'line': line,
             },
-            success: function(ret) {
+            success: function (ret) {
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     that.isRequest = 0;
@@ -247,14 +247,14 @@ Page({
                     cb();
                 }
             },
-            fail: function() {
+            fail: function () {
                 that.showMessage({
                     message: '查询失败，请稍后重试'
                 });
             }
         });
     },
-    getStation: function() {
+    getStation: function () {
         wx.showLoading({
             title: '数据加载中',
             mask: true,
@@ -268,7 +268,7 @@ Page({
                 'line': this.data.line,
                 'direction': this.data.directions[this.data.directionIndex].value,
             },
-            success: function(ret) {
+            success: function (ret) {
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     return;
@@ -291,14 +291,14 @@ Page({
                     }
                 }
             },
-            fail: function() {
+            fail: function () {
                 that.showMessage({
                     message: '查询失败，请稍后重试'
                 });
             }
         })
     },
-    getStatus: function() {
+    getStatus: function () {
         if (this.data.stationIndex == 0) {
             return;
         }
@@ -317,7 +317,7 @@ Page({
                 'direction': this.data.directions[this.data.directionIndex].value,
                 'station': this.data.stations[this.data.stationIndex].value,
             },
-            success: function(ret) {
+            success: function (ret) {
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     return;
@@ -330,14 +330,14 @@ Page({
                 wx.hideLoading();
                 that.addFavor();
             },
-            fail: function() {
+            fail: function () {
                 that.showMessage({
                     message: '查询失败，请稍后重试'
                 });
             }
         })
     },
-    addFavor: function() {
+    addFavor: function () {
         this.setData({
             favorFlag: false,
         });
@@ -363,7 +363,7 @@ Page({
         });
         wx.setStorageSync('favorList', favorList);
     },
-    doFavor: function(e) {
+    doFavor: function (e) {
         var that = this;
         var favor = e.currentTarget.dataset.favor;
         that.setData({
@@ -375,7 +375,7 @@ Page({
             detail: {
                 value: favor.line
             }
-        }, function() {
+        }, function () {
             that.changeDirection({
                 detail: {
                     value: favor.directionIndex

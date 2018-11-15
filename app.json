@@ -1,11 +1,14 @@
 {
-  "pages":[
-    "pages/index/index"
-  ],
-  "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "实时公交",
-    "navigationBarTextStyle":"black"
-  }
+    "pages": [
+        "pages/index/index",
+        "pages/beijing/beijing",
+        "pages/shanghai/shanghai",
+        "pages/shenzhen/shenzhen"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#fff",
+        "navigationBarTitleText": "实时公交",
+        "navigationBarTextStyle": "black"
+    }
 }

@@ -45,6 +45,10 @@
     <view class='qb'>
         <button class='weui-btn' type='primary' bindtap='getStatus'>查询</button>
     </view>
+    <view class='favor' wx:if='{{favorList.length > 0}}'>
+        <view class='favorLabel'>常用：</view>
+        <view wx:for='{{favorList}}' wx:key='line' data-favor='{{item}}' class='favorItem' bindtap='doFavor'>{{item.line}}</view>
+    </view>
     <view class='bus-status'>
         <view class='ld'>
             <text class='line'>{{busStatus.line}}</text>
@@ -55,7 +59,7 @@
         </view>
         <view class='{{statusClass}}'>
             <scroll-view scroll-x scroll-y class='sv' scroll-left='{{scrollLeft}}'>
-                <view wx:for='{{busStatus.list}}' class='station'>
+                <view wx:for='{{busStatus.list}}' wx:key='value' class='station'>
                     <view wx:if='{{item.virtual}}' class='station-item'>
                         <image src='/images/vehicle_ico1.png' wx:if='{{item.hasBus}}' class='bus'></image>
                     </view>

@@ -1,0 +1,2 @@
+/* pages/shanghai/shanghai.wxss */
+@import '../index/index.wxss';
