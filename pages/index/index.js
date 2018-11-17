@@ -251,6 +251,7 @@ Page({
                 that.showMessage({
                     message: '查询失败，请稍后重试'
                 });
+                that.isRequest = 0;
             }
         });
     },

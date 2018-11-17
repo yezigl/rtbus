@@ -1,9 +1,6 @@
 {
     "pages": [
-        "pages/index/index",
-        "pages/beijing/beijing",
-        "pages/shanghai/shanghai",
-        "pages/shenzhen/shenzhen"
+        "pages/index/index"
     ],
     "window": {
         "backgroundTextStyle": "light",
