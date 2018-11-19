@@ -16,10 +16,8 @@
                 <view class='weui-label'>线路</view>
             </view>
             <view class='weui-cell__bd'>
-                <input type='text' class='weui-input' value='{{line}}' bindblur='getDirection' bindconfirm='getDirection' bindfocus='directionFocus' bindinput='searchLine' placeholder='请输入线路' placeholder-class='muted' />
-                <view class='search' wx:if='{{searchList.length > 0}}'>
-                    <view class='search-item' wx:for='{{searchList}}' data-line='{{item}}'>{{item}}</view>
-                </view>
+                <input wx:if='{{searchFlag}}' type='text' class='weui-input' value='{{line}}' bindconfirm='getDirection' bindinput='searchLine' placeholder='请输入线路' placeholder-class='muted' />
+                <input wx:if='{{!searchFlag}}' type='text' class='weui-input' value='{{line}}' bindblur='getDirection' bindconfirm='getDirection' bindfocus='directionFocus' placeholder='请输入线路' placeholder-class='muted' />
             </view>
             <picker wx:if='{{nearbyStations.length > 0}}' range='{{nearbyStations}}' class='nearby' bindchange='changeNearby'>附近</picker>
             <icon type='info' size='18' class='tip' color='#ccc' bindtap='showTip'></icon>
@@ -32,6 +30,9 @@
                 <picker range='{{directions}}' range-key='name' value='{{directions[directionIndex].value}}' bindchange='changeDirection' disabled='{{directionDisable}}'>
                     <view class='weui-input {{directionClass}}'>{{directions[directionIndex].name}}</view>
                 </picker>
+                <scroll-view scroll-y class='search' wx:if='{{searchList.length > 0}}'>
+                    <view class='search-item' wx:for='{{searchList}}' wx:key='{{item}}' bindtap='searchChoose' data-line='{{item}}'>{{item}}</view>
+                </scroll-view>
             </view>
         </view>
         <view class='weui-cell weui-cell_input'>

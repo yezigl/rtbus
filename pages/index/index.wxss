@@ -137,11 +137,20 @@
     width: 300rpx;
     height: 400rpx;
     position: absolute;
-    top: 88rpx;
+    top: 0;
     background-color: #fff;
+    z-index: 100;
+    border: 1px solid #eee;
 }
 
 .search-item {
     height: 60rpx;
+    padding-left: 20rpx;
+    padding-top: 10rpx;
+    padding-bottom: 10rpx;
     border-bottom: 1px solid #eee;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    font-size: 28rpx;
 }

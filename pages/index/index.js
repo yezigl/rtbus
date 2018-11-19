@@ -43,6 +43,8 @@ Page({
 
         step: 0,
         lines: [],
+        searchCity: '0,1',
+        searchFlag: false,
         searchList: [],
         searchStr: '',
     },
@@ -70,6 +72,13 @@ Page({
         this.getNearby();
     },
 
+    mockEvent: function(value) {
+        return {
+            detail: {
+                value: value
+            }
+        }
+    },
     //事件处理函数
     changeCity: function(e) {
         var value = e.detail.value;
@@ -81,9 +90,10 @@ Page({
             step: 0,
         });
         this.reset();
+        this.getCityLines(this.getCityCode());
         wx.setStorageSync('cityIndex', value);
     },
-    directionFocus: function (e) {
+    directionFocus: function(e) {
         this.setData({
             directionDisable: true,
             step: 1,
@@ -92,23 +102,24 @@ Page({
     searchLine: function(e) {
         var input = e.detail.value;
         if (input) {
-            var p = new RegExp(',(' + input + '.*?),', 'g');
+            var p = new RegExp(',' + input + '.*?;', 'gi');
             var searchArr = this.data.searchStr.match(p);
-            console.log(searchArr.map(function (e) {
-                return e.replace(/,/g, '');
-            }).reduce(function(e) {
-                return e;
-            }));
             this.setData({
-                searchList: searchArr.map(function(e) {
-                    return e.replace(',', '');
-                }).reduce(e => e)
+                searchList: searchArr ? searchArr.map(e => e.replace(/[,;]/g, '')) : []
             });
         } else {
             this.setData({
                 searchList: []
             });
         }
+    },
+    searchChoose: function(e) {
+        var line = e.currentTarget.dataset.line;
+        this.setData({
+            line: line,
+            searchList: [],
+        });
+        this.getDirection(this.mockEvent(line));
     },
     changeDirection: function(e) {
         this.setData({
@@ -117,11 +128,7 @@ Page({
             step: 2,
         });
         this.resetStatus();
-        this.changeStation({
-            detail: {
-                value: 0
-            }
-        });
+        this.changeStation(this.mockEvent(0));
         if (e.detail.value != 0) {
             this.getStation();
         }
@@ -137,11 +144,7 @@ Page({
         this.setData({
             line: this.data.nearbyStations[e.detail.value]
         });
-        this.getDirection({
-            detail: {
-                value: this.data.nearbyStations[e.detail.value]
-            }
-        });
+        this.getDirection(this.mockEvent(this.data.nearbyStations[e.detail.value]));
     },
 
     reset: function() {
@@ -171,13 +174,29 @@ Page({
         });
     },
     showMessage: function(data) {
-        wx.hideLoading();
         wx.showToast({
-            'title': data.message,
+            'title': data.message || data,
             'icon': 'none',
             'duration': 2000
         });
     },
+    hideSearch: function() {
+        this.setData({
+            searchList: []
+        });
+    },
+    loadingData: function() {
+        this.isRequest = 1;
+        wx.showLoading({
+            title: '数据加载中',
+            mask: true,
+        });
+    },
+    loadingDone: function() {
+        this.isRequest = 0;
+        wx.hideLoading();
+    },
+
 
     getCityCode: function() {
         return this.data.cities[this.data.cityIndex].code;
@@ -205,16 +224,22 @@ Page({
             data: {
                 'cityCode': cityCode,
             },
-            success: function (ret) {
-                that.setData({
-                    lines: ret.data.data,
-                    searchStr: ',' + ret.data.data.map(function(e) {
-                        return e.id
-                        }).reduce(function(a, b) {
-                            return a + ',' + b;
-                        }) + ','
-                });
-                wx.setStorageSync('lines', ret.data.data);
+            success: function(ret) {
+                var lines = ret.data.data;
+                if (lines.length > 0) {
+                    that.setData({
+                        lines: lines,
+                        searchStr: lines.map(e => ',' + e.id + ';').reduce((a, b) => a + b),
+                        searchFlag: that.data.searchCity.indexOf(that.data.cityIndex) >= 0,
+                    });
+                } else {
+                    that.setData({
+                        lines: [],
+                        searchStr: '',
+                        searchFlag: false,
+                    });
+                }
+                wx.setStorageSync('lines', lines);
             }
         })
     },
@@ -271,11 +296,9 @@ Page({
         if (this.isRequest == 1 || !line) {
             return;
         }
-        this.isRequest = 1;
-        wx.showLoading({
-            title: '数据加载中',
-            mask: true,
-        });
+        this.hideSearch();
+        this.loadingData();
+
         var that = this;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/direction',
@@ -285,9 +308,9 @@ Page({
                 'line': line,
             },
             success: function(ret) {
+                that.loadingDone();
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
-                    that.isRequest = 0;
                     return;
                 }
                 that.setData({
@@ -296,25 +319,18 @@ Page({
                     directionDisable: false,
                 });
                 that.reset();
-                wx.hideLoading();
-                that.isRequest = 0;
                 if (cb) {
                     cb();
                 }
             },
             fail: function() {
-                that.showMessage({
-                    message: '查询失败，请稍后重试'
-                });
-                that.isRequest = 0;
+                that.loadingDone();
+                that.showMessage('查询失败，请稍后重试');
             }
         });
     },
     getStation: function() {
-        wx.showLoading({
-            title: '数据加载中',
-            mask: true,
-        });
+        this.loadingData();
         var that = this;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/station',
@@ -325,6 +341,7 @@ Page({
                 'direction': this.data.directions[this.data.directionIndex].value,
             },
             success: function(ret) {
+                that.loadingDone();
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     return;
@@ -332,7 +349,7 @@ Page({
                 that.setData({
                     stations: ret.data.data,
                 });
-                wx.hideLoading();
+
                 if (that.data.favorFlag) {
                     return;
                 }
@@ -348,9 +365,8 @@ Page({
                 }
             },
             fail: function() {
-                that.showMessage({
-                    message: '查询失败，请稍后重试'
-                });
+                that.loadingDone();
+                that.showMessage('查询失败，请稍后重试');
             }
         })
     },
@@ -358,10 +374,7 @@ Page({
         if (this.data.stationIndex == 0) {
             return;
         }
-        wx.showLoading({
-            title: '数据加载中',
-            mask: true,
-        });
+        this.loadingData();
         var that = this;
         var scrollLeft = ((this.data.stationIndex - 3) * 2 * 100 - 100) / this.data.pixelRatio;
         wx.request({
@@ -374,6 +387,7 @@ Page({
                 'station': this.data.stations[this.data.stationIndex].value,
             },
             success: function(ret) {
+                that.loadingDone();
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
                     return;
@@ -383,13 +397,12 @@ Page({
                     scrollLeft: scrollLeft < 0 ? 0 : scrollLeft,
                     statusClass: 'status',
                 });
-                wx.hideLoading();
+
                 that.addFavor();
             },
             fail: function() {
-                that.showMessage({
-                    message: '查询失败，请稍后重试'
-                });
+                that.loadingDone();
+                that.showMessage('查询失败，请稍后重试');
             }
         })
     },
@@ -427,21 +440,9 @@ Page({
             line: favor.line,
             favorFlag: true,
         });
-        that.getDirection({
-            detail: {
-                value: favor.line
-            }
-        }, function() {
-            that.changeDirection({
-                detail: {
-                    value: favor.directionIndex
-                }
-            });
-            that.changeStation({
-                detail: {
-                    value: favor.stationIndex
-                }
-            });
+        that.getDirection(that.mockEvent(favor.line), function() {
+            that.changeDirection(that.mockEvent(favor.directionIndex));
+            that.changeStation(that.mockEvent(favor.stationIndex));
         });
     }
 })
