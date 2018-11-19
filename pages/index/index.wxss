@@ -120,15 +120,28 @@
     margin-right: 10rpx;
 }
 
-.favorLabel {
+.favor-label {
     display: inline-block;
 }
 
-.favorItem {
+.favor-item {
     border: 1px solid #eee;
     border-radius: 25rpx;
     display: inline;
     padding: 4rpx 20rpx;
     text-align: center;
     margin: 0 10rpx;
+}
+
+.search {
+    width: 300rpx;
+    height: 400rpx;
+    position: absolute;
+    top: 88rpx;
+    background-color: #fff;
+}
+
+.search-item {
+    height: 60rpx;
+    border-bottom: 1px solid #eee;
 }

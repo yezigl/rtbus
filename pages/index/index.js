@@ -7,13 +7,9 @@ Page({
     data: {
         apiUrl: 'https://1e10.cn',
 
-        cities: [{
-            "code": "010",
-            "name": "北京",
-            "tips": "1、请输入线路，如“636”、“专101”、“特11”、“特8内”、“300内”、“300快外”。\n2、数据来源于北京公交公司，仅供参考，如有不符，敬请谅解。"
-        }],
+        cities: [],
         cityIndex: 0,
-        cityTips: '1、请输入线路，如“636”、“专101”、“特11”、“特8内”、“300内”、“300快外”。\n2、数据来源于北京公交公司，仅供参考，如有不符，敬请谅解。',
+        cityTips: '',
 
         directions: [{
             name: '请选择行车方向',
@@ -44,6 +40,11 @@ Page({
 
         favorList: [],
         favorFlag: false,
+
+        step: 0,
+        lines: [],
+        searchList: [],
+        searchStr: '',
     },
 
     onLoad: function() {
@@ -55,12 +56,18 @@ Page({
                 });
             },
         })
-        this.getNearby();
+        var cities = [{
+            "code": "010",
+            "name": "北京"
+        }];
         this.setData({
+            cities: wx.getStorageSync('cities') || cities,
+            lines: wx.getStorageSync('lines') || [],
             cityIndex: wx.getStorageSync('cityIndex') || 0,
             favorList: wx.getStorageSync('favorList') || [],
         });
         this.getOpenCity();
+        this.getNearby();
     },
 
     //事件处理函数
@@ -71,14 +78,43 @@ Page({
             cityIndex: value,
             line: '',
             cityTips: that.data.cities[value].tips,
+            step: 0,
         });
         this.reset();
         wx.setStorageSync('cityIndex', value);
+    },
+    directionFocus: function (e) {
+        this.setData({
+            directionDisable: true,
+            step: 1,
+        });
+    },
+    searchLine: function(e) {
+        var input = e.detail.value;
+        if (input) {
+            var p = new RegExp(',(' + input + '.*?),', 'g');
+            var searchArr = this.data.searchStr.match(p);
+            console.log(searchArr.map(function (e) {
+                return e.replace(/,/g, '');
+            }).reduce(function(e) {
+                return e;
+            }));
+            this.setData({
+                searchList: searchArr.map(function(e) {
+                    return e.replace(',', '');
+                }).reduce(e => e)
+            });
+        } else {
+            this.setData({
+                searchList: []
+            });
+        }
     },
     changeDirection: function(e) {
         this.setData({
             directionIndex: e.detail.value,
             directionClass: e.detail.value == 0 ? 'muted' : '',
+            step: 2,
         });
         this.resetStatus();
         this.changeStation({
@@ -94,6 +130,7 @@ Page({
         this.setData({
             stationIndex: e.detail.value,
             stationClass: e.detail.value == 0 ? 'muted' : '',
+            step: 3,
         })
     },
     changeNearby: function(e) {
@@ -155,6 +192,29 @@ Page({
                     cities: ret.data.data,
                     cityTips: ret.data.data[that.data.cityIndex].tips,
                 });
+                wx.setStorageSync('cities', ret.data.data);
+                that.getCityLines(that.getCityCode());
+            }
+        })
+    },
+    getCityLines: function(cityCode) {
+        var that = this;
+        wx.request({
+            url: that.data.apiUrl + '/api/rtbus/lines',
+            method: 'GET',
+            data: {
+                'cityCode': cityCode,
+            },
+            success: function (ret) {
+                that.setData({
+                    lines: ret.data.data,
+                    searchStr: ',' + ret.data.data.map(function(e) {
+                        return e.id
+                        }).reduce(function(a, b) {
+                            return a + ',' + b;
+                        }) + ','
+                });
+                wx.setStorageSync('lines', ret.data.data);
             }
         })
     },
@@ -206,11 +266,6 @@ Page({
             }
         })
     },
-    directionFocus: function(e) {
-        this.setData({
-            directionDisable: true
-        });
-    },
     getDirection: function(e, cb) {
         var line = e.detail.value;
         if (this.isRequest == 1 || !line) {
@@ -238,7 +293,7 @@ Page({
                 that.setData({
                     line: line,
                     directions: ret.data.data,
-                    directionDisable: false
+                    directionDisable: false,
                 });
                 that.reset();
                 wx.hideLoading();
@@ -275,7 +330,7 @@ Page({
                     return;
                 }
                 that.setData({
-                    stations: ret.data.data
+                    stations: ret.data.data,
                 });
                 wx.hideLoading();
                 if (that.data.favorFlag) {

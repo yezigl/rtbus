@@ -16,7 +16,10 @@
                 <view class='weui-label'>线路</view>
             </view>
             <view class='weui-cell__bd'>
-                <input type='text' class='weui-input' value='{{line}}' bindblur='getDirection' bindconfirm='getDirection' bindfocus='directionFocus' placeholder='请输入线路' placeholder-class='muted' />
+                <input type='text' class='weui-input' value='{{line}}' bindblur='getDirection' bindconfirm='getDirection' bindfocus='directionFocus' bindinput='searchLine' placeholder='请输入线路' placeholder-class='muted' />
+                <view class='search' wx:if='{{searchList.length > 0}}'>
+                    <view class='search-item' wx:for='{{searchList}}' data-line='{{item}}'>{{item}}</view>
+                </view>
             </view>
             <picker wx:if='{{nearbyStations.length > 0}}' range='{{nearbyStations}}' class='nearby' bindchange='changeNearby'>附近</picker>
             <icon type='info' size='18' class='tip' color='#ccc' bindtap='showTip'></icon>
@@ -46,8 +49,8 @@
         <button class='weui-btn' type='primary' bindtap='getStatus'>查询</button>
     </view>
     <view class='favor' wx:if='{{favorList.length > 0}}'>
-        <view class='favorLabel'>常用：</view>
-        <view wx:for='{{favorList}}' wx:key='line' data-favor='{{item}}' class='favorItem' bindtap='doFavor'>{{item.line}}</view>
+        <view class='favor-label'>常用：</view>
+        <view wx:for='{{favorList}}' wx:key='line' data-favor='{{item}}' class='favor-item' bindtap='doFavor'>{{item.line}}</view>
     </view>
     <view class='bus-status'>
         <view class='ld'>
