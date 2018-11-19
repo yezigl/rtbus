@@ -43,7 +43,6 @@ Page({
 
         step: 0,
         lines: [],
-        searchCity: '0,1',
         searchFlag: false,
         searchList: [],
         searchStr: '',
@@ -230,7 +229,7 @@ Page({
                     that.setData({
                         lines: lines,
                         searchStr: lines.map(e => ',' + e.id + ';').reduce((a, b) => a + b),
-                        searchFlag: that.data.searchCity.indexOf(that.data.cityIndex) >= 0,
+                        searchFlag: true,
                     });
                 } else {
                     that.setData({
