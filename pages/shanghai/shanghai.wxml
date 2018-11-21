@@ -1,0 +1,2 @@
+<!--pages/shanghai/shanghai.wxml-->
+<include src='../index/index.wxml' />

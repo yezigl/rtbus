@@ -1,7 +1,7 @@
+// pages/beijing/beijing.js
 //index.js
 //获取应用实例
 const app = getApp()
-var amap = require('../../libs/amap-wx.js');
 
 Page({
     data: {
@@ -48,10 +48,10 @@ Page({
         searchStr: '',
     },
 
-    onLoad: function() {
+    onLoad: function () {
         var that = this;
         wx.getSystemInfo({
-            success: function(res) {
+            success: function (res) {
                 that.setData({
                     pixelRatio: 2 * 375 / res.screenWidth
                 });
@@ -68,10 +68,9 @@ Page({
             favorList: wx.getStorageSync('favorList') || [],
         });
         this.getOpenCity();
-        this.getNearby();
     },
 
-    mockEvent: function(value) {
+    mockEvent: function (value) {
         return {
             detail: {
                 value: value
@@ -79,7 +78,7 @@ Page({
         }
     },
     //事件处理函数
-    changeCity: function(e) {
+    changeCity: function (e) {
         var value = e.detail.value;
         var that = this;
         this.setData({
@@ -92,13 +91,13 @@ Page({
         this.getCityLines(this.getCityCode());
         wx.setStorageSync('cityIndex', value);
     },
-    directionFocus: function(e) {
+    directionFocus: function (e) {
         this.setData({
             directionDisable: true,
             step: 1,
         });
     },
-    searchLine: function(e) {
+    searchLine: function (e) {
         var input = e.detail.value;
         if (input) {
             var p = new RegExp(',' + input + '.*?;', 'gi');
@@ -112,7 +111,7 @@ Page({
             });
         }
     },
-    searchChoose: function(e) {
+    searchChoose: function (e) {
         var line = e.currentTarget.dataset.line;
         this.setData({
             line: line,
@@ -120,7 +119,7 @@ Page({
         });
         this.getDirection(this.mockEvent(line));
     },
-    changeDirection: function(e) {
+    changeDirection: function (e) {
         this.setData({
             directionIndex: e.detail.value,
             directionClass: e.detail.value == 0 ? 'muted' : '',
@@ -132,21 +131,21 @@ Page({
             this.getStation();
         }
     },
-    changeStation: function(e) {
+    changeStation: function (e) {
         this.setData({
             stationIndex: e.detail.value,
             stationClass: e.detail.value == 0 ? 'muted' : '',
             step: 3,
         })
     },
-    changeNearby: function(e) {
+    changeNearby: function (e) {
         this.setData({
             line: this.data.nearbyStations[e.detail.value]
         });
         this.getDirection(this.mockEvent(this.data.nearbyStations[e.detail.value]));
     },
 
-    reset: function() {
+    reset: function () {
         this.setData({
             directionIndex: 0,
             directionClass: 'muted',
@@ -159,53 +158,53 @@ Page({
         });
         this.resetStatus();
     },
-    resetStatus: function() {
+    resetStatus: function () {
         this.setData({
             busStatus: {},
             scrollLeft: 0,
             statusClass: 'status-ad',
         });
     },
-    showTip: function() {
+    showTip: function () {
         wx.showModal({
             content: this.data.cityTips,
             showCancel: false,
         });
     },
-    showMessage: function(data) {
+    showMessage: function (data) {
         wx.showToast({
             'title': data.message || data,
             'icon': 'none',
             'duration': 2000
         });
     },
-    hideSearch: function() {
+    hideSearch: function () {
         this.setData({
             searchList: []
         });
     },
-    loadingData: function() {
+    loadingData: function () {
         this.isRequest = 1;
         wx.showLoading({
             title: '数据加载中',
             mask: true,
         });
     },
-    loadingDone: function() {
+    loadingDone: function () {
         this.isRequest = 0;
         wx.hideLoading();
     },
 
 
-    getCityCode: function() {
+    getCityCode: function () {
         return this.data.cities[this.data.cityIndex].code;
     },
-    getOpenCity: function() {
+    getOpenCity: function () {
         var that = this;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/city',
             method: 'GET',
-            success: function(ret) {
+            success: function (ret) {
                 that.setData({
                     cities: ret.data.data,
                     cityTips: ret.data.data[that.data.cityIndex].tips,
@@ -215,7 +214,7 @@ Page({
             }
         })
     },
-    getCityLines: function(cityCode) {
+    getCityLines: function (cityCode) {
         var that = this;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/lines',
@@ -223,7 +222,7 @@ Page({
             data: {
                 'cityCode': cityCode,
             },
-            success: function(ret) {
+            success: function (ret) {
                 var lines = ret.data.data;
                 if (lines.length > 0) {
                     that.setData({
@@ -242,55 +241,7 @@ Page({
             }
         })
     },
-    getNearby: function() {
-        var that = this;
-        var wxamap = new amap.AMapWX({
-            key: 'd681595fb1acd11bd900ad2bac9b026d'
-        });
-        wxamap.getPoiAround({
-            querykeywords: '公交',
-            querytypes: '150700',
-            success: function(data) {
-                var stmap = {};
-                var nst = '';
-                for (var j = 0; j < data.poisData.length && j < 2; j++) {
-                    var poiData = data.poisData[j];
-                    var address = poiData.address;
-                    var ss = address.split(';');
-                    for (var i = 0; i < ss.length; i++) {
-                        var line = ss[i].replace(/路|高峰/g, '');
-                        if (line.indexOf('/') > 0) {
-                            line = line.split('/')[0];
-                        }
-                        if (that.data.cityIndex == 0) {
-                            if (/^(\w+|专|夜|快|运)?\d+(快|(快?(内|外))|通勤快车)?/.test(line) && line.indexOf('区间') < 0) {
-                                stmap[line] = j;
-                            }
-                        } else if (line.indexOf('停运') < 0 && line.indexOf('区间') < 0) {
-                            stmap[line] = j;
-                        }
-                    }
-                    if (j == 0) {
-                        nst = poiData.name.replace('(公交站)', '');
-                    }
-                }
-                var sts = [];
-                for (var key in stmap) {
-                    sts.push(key);
-                }
-                if (sts.length > 0) {
-                    that.setData({
-                        nearbyStations: sts,
-                        nearbyStation: nst
-                    });
-                }
-            },
-            fail: function(info) {
-                console.log(info);
-            }
-        })
-    },
-    getDirection: function(e, cb) {
+    getDirection: function (e, cb) {
         var line = e.detail.value;
         if (this.isRequest == 1 || !line) {
             return;
@@ -306,7 +257,7 @@ Page({
                 'cityCode': this.getCityCode(),
                 'line': line,
             },
-            success: function(ret) {
+            success: function (ret) {
                 that.loadingDone();
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
@@ -322,13 +273,13 @@ Page({
                     cb();
                 }
             },
-            fail: function() {
+            fail: function () {
                 that.loadingDone();
                 that.showMessage('查询失败，请稍后重试');
             }
         });
     },
-    getStation: function() {
+    getStation: function () {
         this.loadingData();
         var that = this;
         wx.request({
@@ -339,7 +290,7 @@ Page({
                 'line': this.data.line,
                 'direction': this.data.directions[this.data.directionIndex].value,
             },
-            success: function(ret) {
+            success: function (ret) {
                 that.loadingDone();
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
@@ -348,28 +299,14 @@ Page({
                 that.setData({
                     stations: ret.data.data,
                 });
-
-                if (that.data.favorFlag) {
-                    return;
-                }
-                // 判断当前的公交车站
-                for (var i = 0; i < ret.data.data.length; i++) {
-                    var st = ret.data.data[i];
-                    if (that.data.nearbyStation.indexOf(st.name) >= 0) {
-                        that.setData({
-                            stationIndex: i,
-                            stationClass: ''
-                        });
-                    }
-                }
             },
-            fail: function() {
+            fail: function () {
                 that.loadingDone();
                 that.showMessage('查询失败，请稍后重试');
             }
         })
     },
-    getStatus: function() {
+    getStatus: function () {
         if (this.data.stationIndex == 0) {
             return;
         }
@@ -385,7 +322,7 @@ Page({
                 'direction': this.data.directions[this.data.directionIndex].value,
                 'station': this.data.stations[this.data.stationIndex].value,
             },
-            success: function(ret) {
+            success: function (ret) {
                 that.loadingDone();
                 if (ret.data.code != 0) {
                     that.showMessage(ret.data);
@@ -396,52 +333,11 @@ Page({
                     scrollLeft: scrollLeft < 0 ? 0 : scrollLeft,
                     statusClass: 'status',
                 });
-
-                that.addFavor();
             },
-            fail: function() {
+            fail: function () {
                 that.loadingDone();
                 that.showMessage('查询失败，请稍后重试');
             }
         })
-    },
-    addFavor: function() {
-        this.setData({
-            favorFlag: false,
-        });
-        var favorList = wx.getStorageSync('favorList') || [];
-        for (var i = 0; i < favorList.length; i++) {
-            var favor = favorList[i];
-            if (favor.line == this.data.line) {
-                return;
-            }
-        }
-        var favor = {
-            cityIndex: this.data.cityIndex,
-            line: this.data.line,
-            directionIndex: this.data.directionIndex,
-            stationIndex: this.data.stationIndex,
-        };
-        favorList.unshift(favor);
-        if (favorList.length > 3) {
-            favorList.pop();
-        }
-        this.setData({
-            favorList: favorList
-        });
-        wx.setStorageSync('favorList', favorList);
-    },
-    doFavor: function(e) {
-        var that = this;
-        var favor = e.currentTarget.dataset.favor;
-        that.setData({
-            cityIndex: favor.cityIndex,
-            line: favor.line,
-            favorFlag: true,
-        });
-        that.getDirection(that.mockEvent(favor.line), function() {
-            that.changeDirection(that.mockEvent(favor.directionIndex));
-            that.changeStation(that.mockEvent(favor.stationIndex));
-        });
     }
 })

@@ -1,0 +1,2 @@
+<!--pages/shenzhen/shenzhen.wxml-->
+<include src='../index/index.wxml' />
