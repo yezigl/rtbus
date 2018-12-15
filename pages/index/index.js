@@ -371,6 +371,7 @@ Page({
     },
     getStatus: function() {
         if (this.data.stationIndex == 0) {
+            this.showMessage('请选择站点')
             return;
         }
         this.loadingData();
@@ -380,10 +381,10 @@ Page({
             url: that.data.apiUrl + '/api/rtbus/status',
             method: 'GET',
             data: {
-                'cityCode': this.getCityCode(),
-                'line': this.data.line,
-                'direction': this.data.directions[this.data.directionIndex].value,
-                'station': this.data.stations[this.data.stationIndex].value,
+                'cityCode': that.getCityCode(),
+                'line': that.data.line,
+                'direction': that.data.directions[that.data.directionIndex].value,
+                'station': that.data.stations[that.data.stationIndex].value,
             },
             success: function(ret) {
                 that.loadingDone();

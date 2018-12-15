@@ -6,7 +6,7 @@
                 <view class='weui-label'>城市</view>
             </view>
             <view class='weui-cell__bd'>
-                <picker range='{{cities}}' range-key='name' value='{{cities[cityIndex].code}}' bindchange='changeCity'>
+                <picker range='{{cities}}' range-key='name' value='{{cityIndex}}' bindchange='changeCity'>
                     <view class='weui-input'>{{cities[cityIndex].name}}</view>
                 </picker>
             </view>
@@ -27,7 +27,7 @@
                 <view class='weui-label'>方向</view>
             </view>
             <view class='weui-cell__bd'>
-                <picker range='{{directions}}' range-key='name' value='{{directions[directionIndex].value}}' bindchange='changeDirection' disabled='{{directionDisable}}'>
+                <picker range='{{directions}}' range-key='name' value='{{directionIndex}}' bindchange='changeDirection' disabled='{{directionDisable}}'>
                     <view class='weui-input {{directionClass}}'>{{directions[directionIndex].name}}</view>
                 </picker>
                 <scroll-view scroll-y class='search' wx:if='{{searchList.length > 0}}'>
@@ -40,7 +40,7 @@
                 <view class='weui-label'>站点</view>
             </view>
             <view class='weui-cell__bd'>
-                <picker range='{{stations}}' range-key='name' value='{{stations[stationIndex].value}}' bindchange='changeStation'>
+                <picker range='{{stations}}' range-key='name' value='{{stationIndex}}' bindchange='changeStation'>
                     <view class='weui-input {{stationClass}}'>{{stations[stationIndex].name}}</view>
                 </picker>
             </view>
