@@ -126,11 +126,13 @@
 
 .favor-item {
     border: 1px solid #eee;
-    border-radius: 25rpx;
+    border-radius: 24rpx;
     display: inline;
-    padding: 4rpx 20rpx;
+    padding: 6rpx 10rpx;
     text-align: center;
     margin: 0 10rpx;
+    font-size: 28rpx;
+    color: #333;
 }
 
 .search {

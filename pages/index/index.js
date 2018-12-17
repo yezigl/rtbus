@@ -5,7 +5,7 @@ var amap = require('../../libs/amap-wx.js');
 
 Page({
     data: {
-        apiUrl: 'https://1e10.cn',
+        apiUrl: 'https://www.1e10.cn',
 
         cities: [],
         cityIndex: 0,
@@ -410,18 +410,21 @@ Page({
         this.setData({
             favorFlag: false,
         });
+        var name = this.data.line + '(' + this.data.directions[this.data.directionIndex].name + ')';
         var favorList = wx.getStorageSync('favorList') || [];
         for (var i = 0; i < favorList.length; i++) {
             var favor = favorList[i];
-            if (favor.line == this.data.line) {
+            if (favor.name == name) {
                 return;
             }
         }
         var favor = {
+            version: 2,
             cityIndex: this.data.cityIndex,
             line: this.data.line,
             directionIndex: this.data.directionIndex,
             stationIndex: this.data.stationIndex,
+            name: name,
         };
         favorList.unshift(favor);
         if (favorList.length > 3) {

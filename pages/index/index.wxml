@@ -51,7 +51,7 @@
     </view>
     <view class='favor' wx:if='{{favorList.length > 0}}'>
         <view class='favor-label'>常用：</view>
-        <view wx:for='{{favorList}}' wx:key='line' data-favor='{{item}}' class='favor-item' bindtap='doFavor'>{{item.line}}</view>
+        <view wx:for='{{favorList}}' wx:key='name' data-favor='{{item}}' class='favor-item' bindtap='doFavor'>{{item.name || item.line}}</view>
     </view>
     <view class='bus-status'>
         <view class='ld'>
