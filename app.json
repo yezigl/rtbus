@@ -5,7 +5,7 @@
     "window": {
         "backgroundTextStyle": "light",
         "navigationBarBackgroundColor": "#fff",
-        "navigationBarTitleText": "实时公交",
+        "navigationBarTitleText": "实时公交查询",
         "navigationBarTextStyle": "black"
     }
 }
