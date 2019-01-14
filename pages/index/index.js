@@ -10,6 +10,7 @@ Page({
         cities: [],
         cityIndex: 0,
         cityTips: '',
+        cityCode: '010',
 
         directions: [{
             name: '请选择行车方向',
@@ -50,6 +51,7 @@ Page({
 
     onLoad: function() {
         var that = this;
+        var version = 2;
         wx.getSystemInfo({
             success: function(res) {
                 that.setData({
@@ -64,11 +66,25 @@ Page({
         this.setData({
             cities: wx.getStorageSync('cities') || cities,
             lines: wx.getStorageSync('lines') || [],
-            cityIndex: wx.getStorageSync('cityIndex') || 0,
             favorList: wx.getStorageSync('favorList') || [],
+            cityCode: wx.getStorageSync('cityCode') || '010',
         });
+        var oldVersion = wx.getStorageSync('version') || 1;
+        if (version > oldVersion) {
+            this.setData({
+                cityCode: this.data.cities[this.data.cityIndex].code
+            });
+            wx.setStorageSync('version', 2);
+        }
         this.getOpenCity();
         this.getNearby();
+        this.setCityIndex();
+    },
+    onShareAppMessage(res) {
+        return {
+            title: '实时公交查询',
+            path: '/pages/index/index'
+        }
     },
 
     mockEvent: function(value) {
@@ -81,16 +97,17 @@ Page({
     //事件处理函数
     changeCity: function(e) {
         var value = e.detail.value;
-        var that = this;
+        var city = this.data.cities[value];
         this.setData({
-            cityIndex: value,
+            cityCode: city.code,
+            cityTips: city.tips,
             line: '',
-            cityTips: that.data.cities[value].tips,
             step: 0,
         });
+        this.setCityIndex();
         this.resetAll();
-        this.getCityLines(this.getCityCode());
-        wx.setStorageSync('cityIndex', value);
+        this.getCityLines(city.code);
+        wx.setStorageSync('cityCode', city.code);
     },
     directionFocus: function(e) {
         this.setData({
@@ -166,6 +183,15 @@ Page({
             statusClass: 'status-ad',
         });
     },
+    setCityIndex: function() {
+        this.data.cities.forEach((v, i) => {
+            if (v.code == this.data.cityCode) {
+                this.setData({
+                    cityIndex: i
+                });
+            }
+        });
+    },
     showTip: function() {
         wx.showModal({
             content: this.data.cityTips,
@@ -196,9 +222,9 @@ Page({
         wx.hideLoading();
     },
 
-
-    getCityCode: function() {
-        return this.data.cities[this.data.cityIndex].code;
+    getCity: function() {
+        var cs = this.data.cities.filter(e => e.code == this.data.cityCode);
+        return cs.length > 0 ? cs[0] : {'code': '010', 'name': '北京'};
     },
     getOpenCity: function() {
         var that = this;
@@ -208,10 +234,10 @@ Page({
             success: function(ret) {
                 that.setData({
                     cities: ret.data.data,
-                    cityTips: ret.data.data[that.data.cityIndex].tips,
+                    cityTips: that.getCity().tips,
                 });
                 wx.setStorageSync('cities', ret.data.data);
-                that.getCityLines(that.getCityCode());
+                that.getCityLines(that.data.cityCode);
             }
         })
     },
@@ -224,7 +250,7 @@ Page({
                 'cityCode': cityCode,
             },
             success: function(ret) {
-                var lines = ret.data.data;
+                var lines = ret.data.data || [];
                 if (lines.length > 0) {
                     that.setData({
                         lines: lines,
@@ -253,7 +279,7 @@ Page({
             success: function(data) {
                 var stmap = {};
                 var nst = '';
-                for (var j = 0; j < data.poisData.length && j < 2; j++) {
+                for (var j = 0; j < (data.poisData.length || []) && j < 2; j++) {
                     var poiData = data.poisData[j];
                     var address = poiData.address;
                     var ss = address.split(';');
@@ -262,7 +288,7 @@ Page({
                         if (line.indexOf('/') > 0) {
                             line = line.split('/')[0];
                         }
-                        if (that.data.cityIndex == 0) {
+                        if (that.data.cityCode == '010') {
                             if (/^(\w+|专|夜|快|运)?\d+(快|(快?(内|外))|通勤快车)?/.test(line) && line.indexOf('区间') < 0) {
                                 stmap[line] = j;
                             }
@@ -303,7 +329,7 @@ Page({
             url: that.data.apiUrl + '/api/rtbus/direction',
             method: 'GET',
             data: {
-                'cityCode': this.getCityCode(),
+                'cityCode': this.data.cityCode,
                 'line': line,
             },
             success: function(ret) {
@@ -335,7 +361,7 @@ Page({
             url: that.data.apiUrl + '/api/rtbus/station',
             method: 'GET',
             data: {
-                'cityCode': this.getCityCode(),
+                'cityCode': this.data.cityCode,
                 'line': this.data.line,
                 'direction': this.data.directions[this.data.directionIndex].value,
             },
@@ -381,7 +407,7 @@ Page({
             url: that.data.apiUrl + '/api/rtbus/status',
             method: 'GET',
             data: {
-                'cityCode': that.getCityCode(),
+                'cityCode': that.data.cityCode,
                 'line': that.data.line,
                 'direction': that.data.directions[that.data.directionIndex].value,
                 'station': that.data.stations[that.data.stationIndex].value,
@@ -419,7 +445,7 @@ Page({
             }
         }
         var favor = {
-            cityIndex: this.data.cityIndex,
+            cityCode: this.data.cityCode,
             line: this.data.line,
             directionIndex: this.data.directionIndex,
             stationIndex: this.data.stationIndex,
@@ -438,10 +464,11 @@ Page({
         var that = this;
         var favor = e.currentTarget.dataset.favor;
         that.setData({
-            cityIndex: favor.cityIndex,
+            cityCode: favor.cityCode,
             line: favor.line,
             favorFlag: true,
         });
+        that.setCityIndex();
         that.getDirection(that.mockEvent(favor.line), function() {
             that.changeDirection(that.mockEvent(favor.directionIndex));
             that.changeStation(that.mockEvent(favor.stationIndex));
