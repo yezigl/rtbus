@@ -7,6 +7,8 @@ Page({
     data: {
         apiUrl: 'https://1e10.cn',
 
+        config: {},
+
         cities: [],
         cityIndex: 0,
         cityTips: '',
@@ -49,9 +51,17 @@ Page({
         searchStr: '',
     },
 
-    onLoad: function() {
+    onLoad: function(options) {
+        if (options.scene) {
+            var scenes = options.scene.split('_');
+            if (scenes.length >= 2) {
+                wx.navigateTo({
+                    url: '/pages/' + scenes[1] + '/index',
+                })
+                return;
+            }
+        }
         var that = this;
-        var version = 2;
         wx.getSystemInfo({
             success: function(res) {
                 that.setData({
@@ -69,6 +79,7 @@ Page({
             favorList: wx.getStorageSync('favorList') || [],
             cityCode: wx.getStorageSync('cityCode') || '010',
         });
+        var version = 2;
         var oldVersion = wx.getStorageSync('version') || 1;
         if (version > oldVersion) {
             this.setData({
@@ -76,6 +87,7 @@ Page({
             });
             wx.setStorageSync('version', 2);
         }
+        this.getConfig();
         this.getOpenCity();
         this.getNearby();
         this.setCityIndex();
@@ -225,6 +237,18 @@ Page({
     getCity: function() {
         var cs = this.data.cities.filter(e => e.code == this.data.cityCode);
         return cs.length > 0 ? cs[0] : {'code': '010', 'name': '北京'};
+    },
+    getConfig: function() {
+        var that = this;
+        wx.request({
+            url: that.data.apiUrl + '/api/rtbus/config',
+            method: 'GET',
+            success: function (ret) {
+                that.setData({
+                    config: ret.data.data
+                });
+            }
+        })
     },
     getOpenCity: function() {
         var that = this;
