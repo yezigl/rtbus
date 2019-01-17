@@ -39,8 +39,8 @@
 
 .station {
     display: inline-block;
-    width: 100rpx;
-    height: 130rpx;
+    width: 60rpx;
+    height: 100rpx;
     border-bottom: 4rpx solid #495057;
     vertical-align: top;
     position: relative;
@@ -52,30 +52,30 @@
 }
 
 .station-icon {
-    width: 40rpx;
-    height: 40rpx;
+    width: 36rpx;
+    height: 36rpx;
     position: absolute;
-    left: 30rpx;
-    bottom: -22rpx;
+    left: 12rpx; /** (station.width - station-icon.width)/2 **/
+    bottom: -20rpx; /** (station-icon.width)/2 + 2 **/
 }
 
 .station-name {
     position: relative;
     writing-mode: vertical-rl;
-    left: 24rpx;
-    top: 160rpx;
+    left: 5rpx; /** (station.width - 50rpx)/2 **/
+    top: 124rpx; /** station.height + station-icon.height/2 + 6 **/
 }
 
 .bus {
-    width: 50rpx;
-    height: 54rpx;
+    width: 40rpx;
+    height: 43rpx;
     position: absolute;
-    left: 26rpx;
+    left: 10rpx; /** (station.width - bus.width)/2 **/
     bottom: 30rpx;
 }
 
 .bus-status {
-    margin-top:20rpx;
+    margin-top:4rpx;
 }
 
 .ld {

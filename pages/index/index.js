@@ -376,6 +376,7 @@ Page({
                 });
 
                 if (that.data.favorFlag) {
+                    that.getStatus();
                     return;
                 }
                 // 判断当前的公交车站
@@ -402,7 +403,7 @@ Page({
         }
         this.loadingData();
         var that = this;
-        var scrollLeft = ((this.data.stationIndex - 3) * 2 * 100 - 100) / this.data.pixelRatio;
+        var scrollLeft = ((this.data.stationIndex - 5) * 2 * 60) / this.data.pixelRatio;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/status',
             method: 'GET',
@@ -464,7 +465,7 @@ Page({
         var that = this;
         var favor = e.currentTarget.dataset.favor;
         that.setData({
-            cityCode: favor.cityCode,
+            cityCode: favor.cityCode || that.data.cities[favor.cityIndex].code,
             line: favor.line,
             favorFlag: true,
         });
