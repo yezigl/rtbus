@@ -49,14 +49,14 @@
 .station:first-child {
     border-bottom: 4rpx solid #fff;
     position: relative;
-    right: -6rpx;
+    right: -8rpx;
     z-index: 10;
 }
 
 .station:last-child {
     border-bottom: 4rpx solid #fff;
     position: relative;
-    left: -6rpx;
+    left: -8rpx;
     z-index: 10;
 }
 
@@ -71,6 +71,7 @@
     position: absolute;
     left: 2rpx; /** (station.width - station-icon.width)/2 **/
     bottom: -20rpx; /** (station-icon.width)/2 + 2 **/
+    z-index: 20;
 }
 
 .station-name {
