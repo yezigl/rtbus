@@ -63,6 +63,7 @@
         </view>
         <view class='{{statusClass}}'>
             <scroll-view scroll-x scroll-y class='sv' scroll-left='{{scrollLeft}}'>
+                <view class='station'></view>
                 <view wx:for='{{busStatus.list}}' wx:key='value' class='station'>
                     <view wx:if='{{item.virtual}}' class='station-item'>
                         <image src='/images/vehicle_ico1.png' wx:if='{{item.hasBus}}' class='bus'></image>
@@ -74,6 +75,7 @@
                         <text wx:else class='station-name'>{{item.name}}</text>
                     </view>
                 </view>
+                <view class='station'></view>
             </scroll-view>
         </view>
     </view>

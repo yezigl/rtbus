@@ -403,7 +403,7 @@ Page({
         }
         this.loadingData();
         var that = this;
-        var scrollLeft = ((this.data.stationIndex - 5) * 2 * 60) / this.data.pixelRatio;
+        var scrollLeft = ((this.data.stationIndex - 7) * 2 * 40) / this.data.pixelRatio;
         wx.request({
             url: that.data.apiUrl + '/api/rtbus/status',
             method: 'GET',

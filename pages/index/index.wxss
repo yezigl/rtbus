@@ -39,11 +39,25 @@
 
 .station {
     display: inline-block;
-    width: 60rpx;
+    width: 40rpx;
     height: 100rpx;
     border-bottom: 4rpx solid #495057;
     vertical-align: top;
     position: relative;
+}
+
+.station:first-child {
+    border-bottom: 4rpx solid #fff;
+    position: relative;
+    right: -6rpx;
+    z-index: 10;
+}
+
+.station:last-child {
+    border-bottom: 4rpx solid #fff;
+    position: relative;
+    left: -6rpx;
+    z-index: 10;
 }
 
 .station-item {
@@ -55,22 +69,22 @@
     width: 36rpx;
     height: 36rpx;
     position: absolute;
-    left: 12rpx; /** (station.width - station-icon.width)/2 **/
+    left: 2rpx; /** (station.width - station-icon.width)/2 **/
     bottom: -20rpx; /** (station-icon.width)/2 + 2 **/
 }
 
 .station-name {
     position: relative;
     writing-mode: vertical-rl;
-    left: 5rpx; /** (station.width - 50rpx)/2 **/
+    left: -5rpx; /** (station.width - 50rpx)/2 **/
     top: 124rpx; /** station.height + station-icon.height/2 + 6 **/
 }
 
 .bus {
-    width: 40rpx;
-    height: 43rpx;
+    width: 36rpx;
+    height: 38rpx;
     position: absolute;
-    left: 10rpx; /** (station.width - bus.width)/2 **/
+    left: 2rpx; /** (station.width - bus.width)/2 **/
     bottom: 30rpx;
 }
 
