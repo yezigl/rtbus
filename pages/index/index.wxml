@@ -82,4 +82,7 @@
     <view class="ad">
         <ad unit-id="adunit-6f8f16ceb38e2c79"></ad>
     </view>
+    <view class='tool'>
+        <navigator wx:if='{{config.greenPlanet}}' class='green-planet' url='/pages/greenPlanet/index?scene=tool'></navigator>
+    </view>
 </view>

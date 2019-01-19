@@ -177,3 +177,18 @@
     align-items: center;
     font-size: 28rpx;
 }
+
+.tool {
+    width: 60rpx;
+    position: fixed;
+    right: 20rpx;
+    top: 55%;
+    z-index: 100;
+}
+
+.green-planet {
+    width: 60rpx;
+    height: 60rpx;
+    background-color: #00CFA5;
+    border-radius: 50%;
+}
