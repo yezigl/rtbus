@@ -7,5 +7,10 @@
         "navigationBarBackgroundColor": "#fff",
         "navigationBarTitleText": "实时公交查询",
         "navigationBarTextStyle": "black"
+    },
+    "permission": {
+        "scope.userLocation": {
+            "desc": "你的位置信息将用于获取周边公交站点信息"
+        }
     }
 }
