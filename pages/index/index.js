@@ -234,7 +234,10 @@ Page({
         wx.hideLoading();
     },
 
-    getCity: function() {
+    getCity: function(cities) {
+        if (cities && cities.length > 0) {
+            return cities.filter(e => e.code == this.data.cityCode)[0];
+        }
         var cs = this.data.cities.filter(e => e.code == this.data.cityCode);
         return cs.length > 0 ? cs[0] : {'code': '010', 'name': '北京'};
     },
@@ -258,7 +261,7 @@ Page({
             success: function(ret) {
                 that.setData({
                     cities: ret.data.data,
-                    cityTips: that.getCity().tips,
+                    cityTips: that.getCity(ret.data.data).tips,
                 });
                 wx.setStorageSync('cities', ret.data.data);
                 that.getCityLines(that.data.cityCode);
