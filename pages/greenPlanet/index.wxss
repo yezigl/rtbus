@@ -241,7 +241,7 @@ radio.qa-icon .wx-radio-input {
     margin-top: 532rpx;
     width: 372rpx;
     height: 128rpx;
-    background: url('https://www.1e10.cn/images/gd_button.svg') no-repeat;
+    background: url('https://www.1e10.cn/images/gd_button.png') no-repeat;
     background-size: 100%;
 }
 

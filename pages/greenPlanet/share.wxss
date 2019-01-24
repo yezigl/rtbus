@@ -15,7 +15,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 0;
+    z-index: 3;
 }
 
 .share-canvas {
@@ -53,13 +53,13 @@
     position: absolute;
     left: 0;
     top: 0;
-    z-index: -2;
+    z-index: 2;
 }
 
 .gp {
     margin-top: 14rpx;
     color: #380749;
-    z-index: -3;
+    z-index: 1;
 }
 
 .gp-show {

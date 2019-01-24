@@ -22,7 +22,7 @@
         <view class='qa-button'>
             <image class='qa-pre' src='https://www.1e10.cn/images/pre.svg' bindtap='preQA' wx:if='{{step != 0}}'></image>
             <image class='qa-next' src='https://www.1e10.cn/images/next.svg' bindtap='nextQA' wx:if='{{step != 2}}'></image>
-            <image class='qa-next' src='https://www.1e10.cn/images/next.svg' bindtap='doneQA' wx:if='{{step == 2}}'></image>
+            <image class='qa-next qa-done' src='https://www.1e10.cn/images/next.svg' bindtap='doneQA' wx:if='{{step == 2}}'></image>
         </view>
     </view>
     <view class='mask' wx:if='{{mask}}'>报告生成中...</view>
@@ -42,8 +42,8 @@
             </view>
         </view>
         <view class='gp-share'>
-            <button open-type='share' class='gp-button'>分享到微信</button>
-            <button bindtap='shareToAblum' class='gp-button'>分享到朋友圈</button>
+            <button open-type='share' class='gp-button gp-share-wx'>分享到微信</button>
+            <button bindtap='shareToAblum' class='gp-button gp-share-quan'>分享到朋友圈</button>
         </view>
     </view>
 </view>

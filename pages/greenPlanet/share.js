@@ -44,10 +44,10 @@ Page({
         var gp = this.data.gp;
         var ratio = aw / 375;
         var w = 300 * ratio;
-        var h = 427 * ratio;
+        var h = 483 * ratio;
         var that = this;
         var star = 'https://www.1e10.cn/images/gp-star.png';
-        var qr = 'https://www.1e10.cn/images/qrcode_2.png';
+        var qr = 'https://www.1e10.cn/images/qrcode.png';
 
         Promise.all([
             utils.promisify(wx.getImageInfo)({
@@ -63,16 +63,16 @@ Page({
             ctx.drawImage(res[0].path, 0, 0, res[0].width, res[0].height, 0, 0, w, h);
             ctx.save();
 
-            ctx.font = '36px ' + that.data.font + ' bolder';
+            ctx.font = 'normal normal bold 36px ' + that.data.font;
             ctx.setTextAlign('center');
             ctx.setFillStyle('#380749');
-            ctx.fillText(gp.title, w / 2, 60 * ratio);
+            ctx.fillText(gp.title, w / 2, 65 * ratio);
             ctx.save();
 
             var dh = 95;
-            var dmargin = 24;
+            var dmargin = 18;
             var dcolor = '#380749';
-            ctx.font = '12px ' + that.data.font + ' bold';
+            ctx.font = 'normal normal bold 11px ' + that.data.font;
             ctx.setTextAlign('center');
             ctx.setFillStyle(dcolor);
             ctx.fillText(gp.description[0], w / 2, dh * ratio);
@@ -98,29 +98,31 @@ Page({
             ctx.fillText('交通绿值', 156 * ratio, (dh + dmargin * 3 + 5) * ratio);
             ctx.save();
 
-            ctx.font = '20px ' + that.data.font + ' bolder';
+            ctx.font = 'normal normal bold 20px ' + that.data.font;
             ctx.setTextAlign('left');
             ctx.setFillStyle('#FFF9C8');
             ctx.fillText(gp.carbon, 86 * ratio, (dh + dmargin * 3 + 5) * ratio);
             ctx.save();
 
             for (var i = 0; i < gp.star; i++) {
-                ctx.drawImage(res[1].path, 0, 0, 42, 38, (208 + (15 * i)) * ratio, 162 * ratio, 13, 12);
+                ctx.drawImage(res[1].path, 0, 0, 42, 38, (208 + (15 * i)) * ratio, (dh + dmargin * 3 - 5) * ratio, 13, 12);
             }
             ctx.save();
 
+            var qtw = 232;
+            var qrw = qtw + 8;
             ctx.font = '10px ' + that.data.font;
             ctx.setTextAlign('right');
-            ctx.setFillStyle('#FFF9C8');
-            ctx.fillText('2018交通绿值图鉴', 225 * ratio, 450 * ratio);
+            ctx.setFillStyle('rgba(255, 249, 200, 0.6)');
+            ctx.fillText('2018交通绿值图鉴', qtw * ratio, 445 * ratio);
             ctx.save();
 
             ctx.setTextAlign('right');
-            ctx.setFillStyle('#FFF9C8');
-            ctx.fillText('长按二维码识别查看', 225 * ratio, 465 * ratio);
+            ctx.setFillStyle('rgba(255, 249, 200, 0.6)');
+            ctx.fillText('长按二维码识别查看', qtw * ratio, 460 * ratio);
             ctx.save();
 
-            ctx.drawImage(res[2].path, 0, 0, res[2].width, res[2].height, 235 * ratio, 435 * ratio, 40, 40);
+            ctx.drawImage(res[2].path, 0, 0, res[2].width, res[2].height, qrw * ratio, 430 * ratio, 40, 40);
             ctx.save();
 
             that.doDraw();
@@ -135,6 +137,8 @@ Page({
         ctx.draw(false, function () {
             wx.canvasToTempFilePath({
                 canvasId: 'shareCanvas',
+                destWidth: 750,
+                destHeight: 1206,
                 success(res) {
                     that.setData({
                         tempFile: res.tempFilePath

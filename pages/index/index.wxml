@@ -61,7 +61,7 @@
         <view class='description'>
             <text>{{busStatus.description}}</text>
         </view>
-        <view class='{{statusClass}}'>
+        <view class='status'>
             <scroll-view scroll-x scroll-y class='sv' scroll-left='{{scrollLeft}}'>
                 <view wx:if='{{busStatus.list}}' class='station'></view>
                 <view wx:for='{{busStatus.list}}' wx:key='value' class='station'>
@@ -82,6 +82,7 @@
     <view class='banner' wx:if='{{config.banner}}'>
         <navigator class='banner-gp' url='/pages/greenPlanet/index?scene=banner'></navigator>
     </view>
+    <view class='status-ad' wx:if='{{!config.banner}}'></view>
     <view class="ad">
         <ad unit-id="adunit-6f8f16ceb38e2c79"></ad>
     </view>

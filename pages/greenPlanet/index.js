@@ -198,7 +198,7 @@ Page({
      */
     onShareAppMessage: function () {
         return {
-            title: '绿色星球',
+            title: '我是' + this.data.gp.title + '，你是啥？',
             path: '/pages/greenPlanet/index',
             imageUrl: this.data.gp.share
         }
