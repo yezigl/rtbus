@@ -31,6 +31,7 @@ page {
     position: relative;
     bottom: -62rpx;
     z-index: 100;
+    margin-top: -26rpx;
 }
 
 .qa-qa {
@@ -123,14 +124,14 @@ radio.qa-icon .wx-radio-input {
 }
 
 .gp {
-    margin-top: 40rpx;
+    margin-top: 14rpx;
     color: #380749;
 }
 
 .gp-show {
     width: 718rpx;
-    height: 1048rpx;
-    background: url('https://www.1e10.cn/images/qa-bike.svg') no-repeat;
+    height: 1022rpx;
+    background-repeat: no-repeat;
     background-size: 100%;
     display: flex;
     flex-direction: column;
@@ -141,7 +142,7 @@ radio.qa-icon .wx-radio-input {
 .gp-title {
     margin-top: 80rpx;
     font-size: 90rpx;
-    font-weight: bold;
+    font-weight: bolder;
 }
 
 .gp-description {
@@ -159,43 +160,36 @@ radio.qa-icon .wx-radio-input {
     align-items: flex-end;
 }
 
-.gp-carbon, .gp-star {
+.gp-gp {
     display: flex;
     align-items: baseline;
+    font-size: 28rpx;
+    font-weight: bold;
 }
 
 .gp-carbon {
-    width: 240rpx;
     height: 70rpx;
-    justify-content: space-between;
 }
 
-.gp-carbon .gp-value {
+.gp-carbon-value {
     font-weight: bold;
     font-size: 50rpx;
     color: #FFF9C8;
+    margin-left: 8rpx;
 }
 
 .gp-star {
-    margin-left: 22rpx;
+    margin-left: 16rpx;
 }
 
-.gp-star .gp-key {
-    width: 120rpx;
-}
-
-.gp-star .gp-value {
+.gp-star-value {
+    margin-left: 8rpx;
     align-self: center;
     display: flex;
     align-items: flex-end;
 }
 
-.gp-key {
-    font-size: 28rpx;
-    font-weight: bold;
-}
-
-.gp-sstar {
+.gp-star-star {
     width: 30rpx;
     height: 30rpx;
     margin-left: 2rpx;
@@ -204,25 +198,67 @@ radio.qa-icon .wx-radio-input {
 
 .gp-share {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    margin-top: 20rpx;
+}
+
+.gp-button {
+    width: 300rpx;
+    height: 102rpx;
+    margin: 0 22rpx;
+    background: url('https://www.1e10.cn/images/gp_share.svg') no-repeat;
+    background-size: 100%;
+    font-size: 32rpx;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    padding-top: 4rpx;
+    color: #390A4A;
+}
+
+.guide {
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
-.gp-qr {
-    width: 62rpx;
-    height: 62rpx;
+.gd-head {
+    width: 456rpx;
+    height: 240rpx;
+    margin-top: 90rpx;
+}
+
+.gd-album {
+    margin-top: 46rpx;
+    width: 662rpx;
+    height: 700rpx;
+    background: url('https://www.1e10.cn/images/gd_ablum2x.png') no-repeat;
+    background-size: 100%;
+}
+
+.gd-button {
+    margin: 0 auto;
+    margin-top: 532rpx;
+    width: 372rpx;
+    height: 128rpx;
+    background: url('https://www.1e10.cn/images/gd_button.svg') no-repeat;
+    background-size: 100%;
+}
+
+.gd-agreement {
+    color: #FFF9C8;
+    font-size: 26rpx;
+    margin-top: 30rpx;
+}
+
+.mask {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url('https://www.1e10.cn/images/qrcode_2.png') no-repeat;
-    background-size: 100%;
-    margin-top: 28rpx;
-    margin-right: 18rpx;
-}
-
-.gp-avatar {
-    width: 27rpx;
-    height: 27rpx;
-    border-radius: 50%;
-    overflow: hidden;
+    color: #ffffff;
+    position: absolute;
+    z-index: 1000
 }

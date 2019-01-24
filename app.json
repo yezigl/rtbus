@@ -1,7 +1,8 @@
 {
     "pages": [
         "pages/index/index",
-        "pages/greenPlanet/index"
+        "pages/greenPlanet/index",
+        "pages/greenPlanet/share"
     ],
     "window": {
         "backgroundTextStyle": "light",

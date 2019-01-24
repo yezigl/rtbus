@@ -1,0 +1,24 @@
+<!--pages/greenPlanet/share.wxml-->
+<view class='container'>
+    <view class='share-layer'>
+        <canvas canvas-id='shareCanvas' class='share-canvas'></canvas>
+        <view class='share-button' bindtap='saveShare'>保存到相册</view>
+    </view>
+    <view class='mask'></view>
+    <view class='gp'>
+        <view class='gp-show' style='background-image: url({{gp.image}});'>
+            <view class='gp-title'>{{gp.title}}</view>
+            <view class='gp-description' wx:for='{{gp.description}}'>{{item}}</view>
+            <view class='gp-content'>
+                <view class='gp-gp'>
+                    <view class='gp-carbon'>碳排放量</view>
+                    <view class='gp-carbon-value'>{{gp.carbon}}</view>
+                    <view class='gp-star'>交通绿值</view>
+                    <view class='gp-star-value'>
+                    <image class='gp-star-star' wx:for='{{gp.star}}' src='https://www.1e10.cn/images/gp-star.png'></image>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

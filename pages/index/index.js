@@ -61,6 +61,7 @@ Page({
                 return;
             }
         }
+
         var that = this;
         wx.getSystemInfo({
             success: function(res) {
@@ -79,14 +80,7 @@ Page({
             favorList: wx.getStorageSync('favorList') || [],
             cityCode: wx.getStorageSync('cityCode') || '010',
         });
-        var version = 2;
-        var oldVersion = wx.getStorageSync('version') || 1;
-        if (version > oldVersion) {
-            this.setData({
-                cityCode: this.data.cities[this.data.cityIndex].code
-            });
-            wx.setStorageSync('version', 2);
-        }
+        this.checkVersion();
         this.getConfig();
         this.getOpenCity();
         this.getNearby();
@@ -104,6 +98,21 @@ Page({
             detail: {
                 value: value
             }
+        }
+    },
+    checkVersion: function() {
+        var version = 2;
+        var oldVersion = wx.getStorageSync('version') || 1;
+        if (version > oldVersion) {
+            this.setData({
+                cityCode: this.data.cities[this.data.cityIndex].code
+            });
+            wx.setStorageSync('version', 2);
+        }
+        var cityCode = wx.getStorageSync('cityCode');
+        var cityIndex = wx.getStorageSync('cityIndex');
+        if (!cityCode && !cityIndex) {
+            wx.removeStorageSync('favorList');
         }
     },
     //事件处理函数

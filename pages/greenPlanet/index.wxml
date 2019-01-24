@@ -1,5 +1,12 @@
 <!--pages/greenPlanet/index.wxml-->
 <view class='container'>
+    <view class='guide' wx:if='{{section == 0}}'>
+        <image class='gd-head' src='https://www.1e10.cn/images/gd_head.png'></image>
+        <view class='gd-album'>
+            <view class='gd-button' bindtap='doQA'></view>
+        </view>
+        <view class='gd-agreement'>本图鉴仅供娱乐，如有雷同，纯属巧合</view>
+    </view>
     <view class='qa' wx:if='{{section == 1}}'>
         <view class='qa-order'>{{qa.order}}</view>
         <view class='qa-qa'>
@@ -13,32 +20,30 @@
             <view class='qa-page'>{{qa.order}}/3</view>
         </view>
         <view class='qa-button'>
-            <image class='qa-pre' src='/images/pre.svg' bindtap='preQA' wx:if='{{step != 0}}'></image>
-            <image class='qa-next' src='/images/next.svg' bindtap='nextQA' wx:if='{{step != 2}}'></image>
-            <image class='qa-next' src='/images/next.svg' bindtap='doneQA' wx:if='{{step == 2}}'></image>
+            <image class='qa-pre' src='https://www.1e10.cn/images/pre.svg' bindtap='preQA' wx:if='{{step != 0}}'></image>
+            <image class='qa-next' src='https://www.1e10.cn/images/next.svg' bindtap='nextQA' wx:if='{{step != 2}}'></image>
+            <image class='qa-next' src='https://www.1e10.cn/images/next.svg' bindtap='doneQA' wx:if='{{step == 2}}'></image>
         </view>
     </view>
+    <view class='mask' wx:if='{{mask}}'>报告生成中...</view>
     <view class='gp' wx:if='{{section == 2}}'>
-        <view class='gp-show'>
+        <view class='gp-show' style='background-image: url({{gp.image}});'>
             <view class='gp-title'>{{gp.title}}</view>
             <view class='gp-description' wx:for='{{gp.description}}'>{{item}}</view>
             <view class='gp-content'>
-                <view class='gp-carbon'>
-                    <view class='gp-key'>碳排放量</view>
-                    <view class='gp-value'>{{gp.carbon}}</view>
-                </view>
-                <view class='gp-star'>
-                    <view class='gp-key'>交通绿植</view>
-                    <view class='gp-value'>
-                    <image class='gp-sstar' wx:for='{{gp.star}}' src='/images/gp-star.png'></image>
+                <view class='gp-gp'>
+                    <view class='gp-carbon'>碳排放量</view>
+                    <view class='gp-carbon-value'>{{gp.carbon}}</view>
+                    <view class='gp-star'>交通绿值</view>
+                    <view class='gp-star-value'>
+                    <image class='gp-star-star' wx:for='{{gp.star}}' src='https://www.1e10.cn/images/gp-star.png'></image>
                     </view>
                 </view>
             </view>
         </view>
         <view class='gp-share'>
-            <view class='gp-qr' src='/images/qrcode.png'>
-                <open-data type='userAvatarUrl' class='gp-avatar'></open-data>
-            </view>
+            <button open-type='share' class='gp-button'>分享到微信</button>
+            <button bindtap='shareToAblum' class='gp-button'>分享到朋友圈</button>
         </view>
     </view>
 </view>
