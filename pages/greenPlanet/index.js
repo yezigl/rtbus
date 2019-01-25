@@ -199,7 +199,7 @@ Page({
     onShareAppMessage: function () {
         return {
             title: '我是' + this.data.gp.title + '，你是啥？',
-            path: '/pages/greenPlanet/index',
+            path: '/pages/index/index?scene=index_greenPlanet',
             imageUrl: this.data.gp.share
         }
     },

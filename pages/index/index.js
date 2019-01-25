@@ -58,7 +58,6 @@ Page({
                 wx.navigateTo({
                     url: '/pages/' + scenes[1] + '/index',
                 })
-                return;
             }
         }
 
